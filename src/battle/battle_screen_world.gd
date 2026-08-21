@@ -82,9 +82,10 @@ func _send_next_trainer_enemy() -> void:
 	_show_message("%s wysyła %s!" % [String(trainer_data.get("name", "Trener")), String(enemy_data.get("name", "Somaskan"))], func(): _set_mode(Mode.COMMAND))
 
 func _close_battle() -> void:
+	# Reset the trainer context before the parent's asynchronous fade so a loss
+	# can never leak trainer rules into the next wild encounter.
+	_reset_trainer_context()
 	super._close_battle()
-	if mode == Mode.CLOSED || !trainer_mode:
-		_reset_trainer_context()
 
 func _reset_trainer_context() -> void:
 	trainer_mode = false
