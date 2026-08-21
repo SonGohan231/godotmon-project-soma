@@ -1,15 +1,66 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://src/ui/mobile_controls.gd" id="1_mobile"]
 
 [sub_resource type="RectangleShape2D" id="DirShape"]
-size = Vector2(25, 25)
+size = Vector2(27, 27)
 
-[sub_resource type="CircleShape2D" id="ActionShape"]
-radius = 19.0
+[sub_resource type="CircleShape2D" id="ActionShapeA"]
+radius = 20.0
 
-[sub_resource type="RectangleShape2D" id="MenuShape"]
-size = Vector2(32, 20)
+[sub_resource type="CircleShape2D" id="ActionShapeZ"]
+radius = 17.0
+
+[sub_resource type="RectangleShape2D" id="StartShape"]
+size = Vector2(43, 17)
+
+[sub_resource type="StyleBoxFlat" id="DpadStyle"]
+bg_color = Color(0.035, 0.07, 0.08, 0.56)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.68, 0.84, 0.82, 0.35)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="AStyle"]
+bg_color = Color(0.45, 0.08, 0.16, 0.62)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.78, 0.82, 0.48)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="ZStyle"]
+bg_color = Color(0.07, 0.18, 0.34, 0.62)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.72, 0.86, 1, 0.48)
+corner_radius_top_left = 19
+corner_radius_top_right = 19
+corner_radius_bottom_right = 19
+corner_radius_bottom_left = 19
+
+[sub_resource type="StyleBoxFlat" id="StartStyle"]
+bg_color = Color(0.04, 0.08, 0.09, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.72, 0.84, 0.82, 0.42)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="MobileControls" type="Control"]
 layout_mode = 3
@@ -21,164 +72,199 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_mobile")
 
-[node name="LeftVisual" type="ColorRect" parent="."]
-offset_left = 14.0
+[node name="DPadCenter" type="Panel" parent="."]
+offset_left = 39.0
 offset_top = 132.0
-offset_right = 39.0
-offset_bottom = 157.0
-color = Color(0.04, 0.12, 0.16, 0.42)
+offset_right = 66.0
+offset_bottom = 159.0
+theme_override_styles/panel = SubResource("DpadStyle")
 mouse_filter = 2
 
-[node name="LeftLabel" type="Label" parent="LeftVisual"]
+[node name="DPadLeft" type="Panel" parent="."]
+offset_left = 12.0
+offset_top = 132.0
+offset_right = 39.0
+offset_bottom = 159.0
+theme_override_styles/panel = SubResource("DpadStyle")
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="DPadLeft"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.82, 0.96, 0.93, 0.8)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.86, 0.94, 0.93, 0.84)
+theme_override_font_sizes/font_size = 12
 text = "◀"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightVisual" type="ColorRect" parent="."]
-offset_left = 64.0
+[node name="DPadRight" type="Panel" parent="."]
+offset_left = 66.0
 offset_top = 132.0
-offset_right = 89.0
-offset_bottom = 157.0
-color = Color(0.04, 0.12, 0.16, 0.42)
+offset_right = 93.0
+offset_bottom = 159.0
+theme_override_styles/panel = SubResource("DpadStyle")
 mouse_filter = 2
 
-[node name="RightLabel" type="Label" parent="RightVisual"]
+[node name="Label" type="Label" parent="DPadRight"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.82, 0.96, 0.93, 0.8)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.86, 0.94, 0.93, 0.84)
+theme_override_font_sizes/font_size = 12
 text = "▶"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="UpVisual" type="ColorRect" parent="."]
+[node name="DPadUp" type="Panel" parent="."]
 offset_left = 39.0
-offset_top = 107.0
-offset_right = 64.0
+offset_top = 105.0
+offset_right = 66.0
 offset_bottom = 132.0
-color = Color(0.04, 0.12, 0.16, 0.42)
+theme_override_styles/panel = SubResource("DpadStyle")
 mouse_filter = 2
 
-[node name="UpLabel" type="Label" parent="UpVisual"]
+[node name="Label" type="Label" parent="DPadUp"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.82, 0.96, 0.93, 0.8)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.86, 0.94, 0.93, 0.84)
+theme_override_font_sizes/font_size = 12
 text = "▲"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DownVisual" type="ColorRect" parent="."]
+[node name="DPadDown" type="Panel" parent="."]
 offset_left = 39.0
-offset_top = 157.0
-offset_right = 64.0
+offset_top = 159.0
+offset_right = 66.0
 offset_bottom = 180.0
-color = Color(0.04, 0.12, 0.16, 0.42)
+theme_override_styles/panel = SubResource("DpadStyle")
 mouse_filter = 2
 
-[node name="DownLabel" type="Label" parent="DownVisual"]
+[node name="Label" type="Label" parent="DPadDown"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.82, 0.96, 0.93, 0.8)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.86, 0.94, 0.93, 0.84)
+theme_override_font_sizes/font_size = 12
 text = "▼"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ActionVisual" type="ColorRect" parent="."]
-offset_left = 256.0
-offset_top = 128.0
-offset_right = 294.0
-offset_bottom = 166.0
-color = Color(0.04, 0.12, 0.16, 0.45)
+[node name="AVisual" type="Panel" parent="."]
+offset_left = 269.0
+offset_top = 124.0
+offset_right = 309.0
+offset_bottom = 164.0
+theme_override_styles/panel = SubResource("AStyle")
 mouse_filter = 2
 
-[node name="ActionLabel" type="Label" parent="ActionVisual"]
+[node name="Label" type="Label" parent="AVisual"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.82, 0.96, 0.93, 0.9)
+theme_override_colors/font_color = Color(1, 0.95, 0.95, 0.94)
 theme_override_font_sizes/font_size = 18
 text = "A"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MenuVisual" type="ColorRect" parent="."]
-offset_left = 278.0
-offset_top = 10.0
-offset_right = 312.0
-offset_bottom = 30.0
-color = Color(0.04, 0.12, 0.16, 0.36)
+[node name="ZVisual" type="Panel" parent="."]
+offset_left = 229.0
+offset_top = 143.0
+offset_right = 263.0
+offset_bottom = 177.0
+theme_override_styles/panel = SubResource("ZStyle")
 mouse_filter = 2
 
-[node name="MenuLabel" type="Label" parent="MenuVisual"]
+[node name="Label" type="Label" parent="ZVisual"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.82, 0.96, 0.93, 0.75)
-theme_override_font_sizes/font_size = 13
-text = "≡"
+theme_override_colors/font_color = Color(0.94, 0.97, 1, 0.94)
+theme_override_font_sizes/font_size = 15
+text = "Z"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartVisual" type="Panel" parent="."]
+offset_left = 139.0
+offset_top = 158.0
+offset_right = 182.0
+offset_bottom = 175.0
+theme_override_styles/panel = SubResource("StartStyle")
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="StartVisual"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.94, 0.93, 0.84)
+theme_override_font_sizes/font_size = 7
+text = "START"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Left" type="TouchScreenButton" parent="."]
-position = Vector2(26.5, 144.5)
+position = Vector2(25.5, 145.5)
 shape = SubResource("DirShape")
 action = "move_left"
 visibility_mode = 0
 
 [node name="Right" type="TouchScreenButton" parent="."]
-position = Vector2(76.5, 144.5)
+position = Vector2(79.5, 145.5)
 shape = SubResource("DirShape")
 action = "move_right"
 visibility_mode = 0
 
 [node name="Up" type="TouchScreenButton" parent="."]
-position = Vector2(51.5, 119.5)
+position = Vector2(52.5, 118.5)
 shape = SubResource("DirShape")
 action = "move_up"
 visibility_mode = 0
 
 [node name="Down" type="TouchScreenButton" parent="."]
-position = Vector2(51.5, 168.0)
+position = Vector2(52.5, 166.5)
 shape = SubResource("DirShape")
 action = "move_down"
 visibility_mode = 0
 
-[node name="Action" type="TouchScreenButton" parent="."]
-position = Vector2(275, 147)
-shape = SubResource("ActionShape")
+[node name="A" type="TouchScreenButton" parent="."]
+position = Vector2(289, 144)
+shape = SubResource("ActionShapeA")
 action = "ui_accept"
 visibility_mode = 0
 
-[node name="Menu" type="TouchScreenButton" parent="."]
-position = Vector2(295, 20)
-shape = SubResource("MenuShape")
+[node name="Z" type="TouchScreenButton" parent="."]
+position = Vector2(246, 160)
+shape = SubResource("ActionShapeZ")
 action = "ui_cancel"
+visibility_mode = 0
+
+[node name="Start" type="TouchScreenButton" parent="."]
+position = Vector2(160.5, 166.5)
+shape = SubResource("StartShape")
+action = "open_menu"
 visibility_mode = 0
