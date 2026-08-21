@@ -10,7 +10,7 @@ func _ready() -> void:
 	ScenesManager.add_scene("res://assets/templates/somadex_player.tscn", ScenesManager.SceneType.ENTITY, Vector2i(5, 5))
 	ScenesManager.add_scene("res://assets/ui/dialogue_box.tscn", ScenesManager.SceneType.UI)
 	ScenesManager.add_scene("res://assets/ui/battle_screen_advanced.tscn", ScenesManager.SceneType.UI)
-	ScenesManager.add_scene("res://assets/ui/start_menu_advanced.tscn", ScenesManager.SceneType.UI)
+	ScenesManager.add_scene("res://assets/ui/start_menu_pixel.tscn", ScenesManager.SceneType.UI)
 	ScenesManager.add_scene("res://assets/ui/mobile_controls.tscn", ScenesManager.SceneType.UI)
 
 	if OS.has_environment("SOMADEX_CAPTURE_PATH"):
