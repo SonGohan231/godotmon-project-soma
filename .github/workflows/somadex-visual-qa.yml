@@ -50,6 +50,14 @@ jobs:
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_dialogue.png
 
+      - name: Capture wild battle composition
+        run: |
+          export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_battle.png"
+          unset SOMADEX_QA_SHOW_TOUCH
+          export SOMADEX_QA_MODE=battle
+          timeout 30s xvfb-run -a godot --path . --display-driver x11
+          test -s qa/vela_battle.png
+
       - name: Upload runtime screenshots
         uses: actions/upload-artifact@v4
         with:
