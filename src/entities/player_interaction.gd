@@ -7,10 +7,14 @@ extends Node
 func _process(_delta: float) -> void:
 	var facing: Vector2 = mover._facing_direction
 	ray.target_position = facing * Constants.TILE_SIZE
+	if Observer.battle_open:
+		return
 	if Input.is_action_just_pressed("ui_accept"):
 		_try_interact()
 
 func _try_interact() -> void:
+	if Observer.battle_open:
+		return
 	var dialogue := get_tree().get_first_node_in_group("dialogue_ui")
 	if dialogue != null && dialogue.is_open():
 		return
