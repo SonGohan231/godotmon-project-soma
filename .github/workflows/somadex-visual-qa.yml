@@ -1,10 +1,6 @@
 name: SOMADEX V2 Visual QA
 
 on:
-  push:
-    branches:
-      - somadex-v2-vertical-slice
-      - somadex-v2-battle-integrated
   pull_request:
     branches:
       - main
@@ -45,7 +41,14 @@ jobs:
           export SOMADEX_QA_MODE=menu
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_start_menu.png
-      - name: Capture battle composition
+      - name: Capture GameState party page
+        run: |
+          export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_party_menu.png"
+          export SOMADEX_QA_SHOW_TOUCH=1
+          export SOMADEX_QA_MODE=menu_party
+          timeout 30s xvfb-run -a godot --path . --display-driver x11
+          test -s qa/vela_party_menu.png
+      - name: Capture battle command composition
         run: |
           export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_battle.png"
           unset SOMADEX_QA_SHOW_TOUCH
@@ -62,6 +65,6 @@ jobs:
       - name: Upload runtime screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: somadex-v2-integrated-battle-qa
+          name: somadex-v2-gameplay-integration-qa
           path: qa/*.png
           if-no-files-found: error

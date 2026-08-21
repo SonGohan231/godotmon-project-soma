@@ -62,12 +62,41 @@ func close_menu() -> void:
 
 func _activate_selected() -> void:
 	match selected:
-		0: _show_page("SOMASKANY", "Drużyna\n1. SOMARI   LV 5   HP 48/48\n\nKolejne sloty będą czytane z trwałego GameState.")
-		1: _show_page("PLECAK", "PRZEDMIOTY\n• Kapsuła x3\n• Opatrunek x2\n\nEkwipunek będzie czytany ze wspólnego stanu gry.")
-		2: _show_page("TRENER", "TRENER\nPoziom 1\nVela — początek wyprawy\n\nPięć dróg rozwoju pozostanie w tym samym klasycznym interfejsie.")
-		3: _show_page("ZAPISZ", "Zapis zostanie podpięty do trwałego GameState bez zmiany stylu menu.")
+		0: _show_page("SOMASKANY", _party_text())
+		1: _show_page("PLECAK", _bag_text())
+		2: _show_page("TRENER", _trainer_text())
+		3: _save_from_menu()
 		4: _show_page("OPCJE", "Sterowanie\nPAD — ruch\nA — wybór / interakcja\nZ — cofnięcie\nSTART — menu")
 		5: close_menu()
+
+func _party_text() -> String:
+	var lines: Array[String] = ["DRUŻYNA %d/6" % GameState.party.size()]
+	for i in GameState.party.size():
+		var member: Dictionary = GameState.party[i]
+		var species := SomaskanCatalog.get_species(StringName(member.get("species_id", "nucik")))
+		lines.append("%d. %s  LV %d  HP %d" % [i + 1, String(species.name).to_upper(), int(member.get("level", 1)), int(member.get("current_hp", 0))])
+	if GameState.storage.size() > 0:
+		lines.append("\nMAGAZYN: %d" % GameState.storage.size())
+	return "\n".join(lines)
+
+func _bag_text() -> String:
+	return "PRZEDMIOTY\n• Kapsuła x%d\n• Opatrunek x%d\n• Żeton Veli x%d" % [int(GameState.bag.get("capsule", 0)), int(GameState.bag.get("bandage", 0)), int(GameState.bag.get("vela_token", 0))]
+
+func _trainer_text() -> String:
+	var chosen := String(GameState.trainer.get("chosen_path", ""))
+	var path_name := "Nie wybrano"
+	if !chosen.is_empty():
+		var path_data := TrainerPaths.get_path(StringName(chosen))
+		if !path_data.is_empty():
+			path_name = String(path_data.name)
+	return "TRENER\nPoziom %d\nXP %d\nPunkty rozwoju %d\nŚcieżka: %s" % [int(GameState.trainer.get("level", 1)), int(GameState.trainer.get("xp", 0)), int(GameState.trainer.get("skill_points", 0)), path_name]
+
+func _save_from_menu() -> void:
+	var result := GameState.save_game()
+	if result == OK:
+		_show_page("ZAPISZ", "Gra została zapisana.\nPozycja, drużyna, plecak i postęp trenera są zachowane.")
+	else:
+		_show_page("ZAPISZ", "Nie udało się zapisać gry. Kod błędu: %d" % int(result))
 
 func _show_page(title: String, body: String) -> void:
 	page_open = true
@@ -76,7 +105,7 @@ func _show_page(title: String, body: String) -> void:
 
 func _show_home_info() -> void:
 	info_title.text = "SOMADEX"
-	info_body.text = "VELA\nPierwszy region wyprawy.\n\nPAD — wybierz\nA — otwórz\nZ / START — zamknij"
+	info_body.text = "VELA\nTrener LV %d\nDrużyna %d/6\n\nPAD — wybierz\nA — otwórz\nZ / START — zamknij" % [int(GameState.trainer.get("level", 1)), GameState.party.size()]
 
 func _refresh_menu() -> void:
 	var names := ["SOMASKANY", "PLECAK", "TRENER", "ZAPISZ", "OPCJE", "WRÓĆ"]
