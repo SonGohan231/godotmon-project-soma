@@ -1,7 +1,7 @@
 extends Node
 class_name SomadexGameState
 
-const SAVE_VERSION := 2
+const SAVE_VERSION := 3
 const DEFAULT_SAVE_PATH := "user://somadex_save.json"
 
 var trainer: Dictionary = {}
@@ -23,7 +23,7 @@ func reset_new_game() -> void:
 	var starter_moves := SomaskanCatalog.move_ids(&"starter")
 	party = [_make_somaskan(&"starter", 5, 48, starter_moves)]
 	storage = []
-	bag = {"capsule":3,"bandage":2,"vela_token":0}
+	bag = {"capsule":3,"bandage":2,"vela_token":0,"stabilizer":1}
 	quest_flags = {"vela_intro":false,"starter_received":true,"first_wild_battle":false}
 	world = {"map_id":"vela","tile_x":5,"tile_y":5,"facing_x":0,"facing_y":1}
 	somadex_seen = {}
@@ -36,7 +36,11 @@ func _make_somaskan(species_id: StringName, level: int, hp: int, moves: Array) -
 	var serialized_moves: Array[String] = []
 	for move_id in moves:
 		serialized_moves.append(String(move_id))
-	return {"uid":"%s-%s-%d" % [String(species_id),Time.get_unix_time_from_system(),randi()],"species_id":String(species_id),"nickname":"","level":level,"xp":0,"current_hp":hp,"status":"","moves":serialized_moves}
+	return {
+		"uid":"%s-%s-%d" % [String(species_id),Time.get_unix_time_from_system(),randi()],
+		"species_id":String(species_id),"nickname":"","level":level,"xp":0,"current_hp":hp,
+		"status":"","moves":serialized_moves,"friendship":0,"battles_won":0
+	}
 
 func add_item(item_id: StringName, amount: int = 1) -> int:
 	var key := String(item_id)
@@ -94,6 +98,43 @@ func add_captured_somaskan(species_id: StringName, level: int, hp: int, moves: A
 	mark_seen(canonical_id)
 	mark_caught(canonical_id)
 	return String(entry.uid)
+
+func award_active_somaskan_xp(enemy_species_id: StringName, enemy_level: int) -> Dictionary:
+	if party.is_empty():
+		return {}
+	var enemy := CreatureDex.get_species(enemy_species_id)
+	var amount := CreatureProgression.defeat_xp(enemy, enemy_level)
+	return award_somaskan_xp(0, amount)
+
+func award_somaskan_xp(party_index: int, amount: int) -> Dictionary:
+	if party_index < 0 || party_index >= party.size() || amount <= 0:
+		return {}
+	var member: Dictionary = party[party_index]
+	var result := CreatureProgression.apply_xp(member, amount)
+	if result.is_empty():
+		return {}
+	var updated: Dictionary = result.get("member", member)
+	updated["friendship"] = mini(255, int(updated.get("friendship", 0)) + 1)
+	updated["battles_won"] = int(updated.get("battles_won", 0)) + 1
+	party[party_index] = updated
+	for evolution_variant in Array(result.get("evolutions", [])):
+		var evolution: Dictionary = evolution_variant
+		var evolved_to := String(evolution.get("to", ""))
+		if !evolved_to.is_empty():
+			var evolved_species := CreatureDex.get_species(StringName(updated.get("species_id", "starter")))
+			mark_seen(StringName(evolved_species.get("species_id", "starter")))
+			mark_caught(StringName(evolved_species.get("species_id", "starter")))
+	return result
+
+func clear_member_status(party_index: int) -> bool:
+	if party_index < 0 || party_index >= party.size():
+		return false
+	var member: Dictionary = party[party_index]
+	if String(member.get("status", "")).is_empty():
+		return false
+	member["status"] = ""
+	party[party_index] = member
+	return true
 
 func mark_seen(species_id: StringName) -> void:
 	var index := CreatureDex.dex_index_for_species(species_id)
@@ -157,17 +198,17 @@ func to_dict() -> Dictionary:
 
 func apply_dict(data: Dictionary) -> bool:
 	var version := int(data.get("version", -1))
-	if version != 1 && version != SAVE_VERSION:
+	if version < 1 || version > SAVE_VERSION:
 		return false
 	trainer = Dictionary(data.get("trainer", {})).duplicate(true)
 	party.clear()
 	for raw_member in Array(data.get("party", [])):
 		if typeof(raw_member) == TYPE_DICTIONARY:
-			party.append(Dictionary(raw_member).duplicate(true))
+			party.append(_normalize_member(Dictionary(raw_member).duplicate(true)))
 	storage.clear()
 	for raw_member in Array(data.get("storage", [])):
 		if typeof(raw_member) == TYPE_DICTIONARY:
-			storage.append(Dictionary(raw_member).duplicate(true))
+			storage.append(_normalize_member(Dictionary(raw_member).duplicate(true)))
 	bag = Dictionary(data.get("bag", {})).duplicate(true)
 	quest_flags = Dictionary(data.get("quest_flags", {})).duplicate(true)
 	world = Dictionary(data.get("world", {})).duplicate(true)
@@ -176,6 +217,9 @@ func apply_dict(data: Dictionary) -> bool:
 	techniques = Dictionary(data.get("techniques", {})).duplicate(true)
 	if version == 1:
 		techniques["TM0001"] = true
+	if version <= 2:
+		if !bag.has("stabilizer"):
+			bag["stabilizer"] = 1
 		for member in party:
 			mark_seen(StringName(member.get("species_id", "starter")))
 			mark_caught(StringName(member.get("species_id", "starter")))
@@ -183,6 +227,13 @@ func apply_dict(data: Dictionary) -> bool:
 			mark_seen(StringName(member.get("species_id", "starter")))
 			mark_caught(StringName(member.get("species_id", "starter")))
 	return !trainer.is_empty() && !world.is_empty()
+
+func _normalize_member(member: Dictionary) -> Dictionary:
+	if !member.has("xp"): member["xp"] = 0
+	if !member.has("status"): member["status"] = ""
+	if !member.has("friendship"): member["friendship"] = 0
+	if !member.has("battles_won"): member["battles_won"] = 0
+	return member
 
 func save_game(path: String = DEFAULT_SAVE_PATH) -> Error:
 	var file := FileAccess.open(path, FileAccess.WRITE)
