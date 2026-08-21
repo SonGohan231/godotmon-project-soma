@@ -1,0 +1,1 @@
+Battle module notes: battle_screen.gd owns the temporary vertical-slice battle state machine; SomaskanCatalog supplies species/move data. Party, bag and save integration are deliberately kept behind stable command hooks so they can be connected from GameState in a separate stage.
