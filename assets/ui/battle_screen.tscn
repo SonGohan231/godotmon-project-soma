@@ -1,0 +1,271 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/battle/battle_screen.gd" id="1_battle"]
+
+[sub_resource type="StyleBoxFlat" id="PanelStyle"]
+bg_color = Color(0.94, 0.95, 0.86, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.08, 0.12, 0.13, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="HPStyle"]
+bg_color = Color(0.19, 0.63, 0.31, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="BattleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_battle")
+
+[node name="Arena" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.66, 0.84, 0.68, 1)
+mouse_filter = 2
+
+[node name="Horizon" type="ColorRect" parent="Arena"]
+offset_top = 90.0
+offset_right = 320.0
+offset_bottom = 180.0
+color = Color(0.82, 0.86, 0.69, 1)
+mouse_filter = 2
+
+[node name="EnemyShadow" type="ColorRect" parent="Arena"]
+offset_left = 211.0
+offset_top = 61.0
+offset_right = 287.0
+offset_bottom = 69.0
+color = Color(0.24, 0.36, 0.23, 0.35)
+mouse_filter = 2
+
+[node name="PlayerShadow" type="ColorRect" parent="Arena"]
+offset_left = 32.0
+offset_top = 118.0
+offset_right = 127.0
+offset_bottom = 128.0
+color = Color(0.24, 0.36, 0.23, 0.35)
+mouse_filter = 2
+
+[node name="EnemySprite" type="Label" parent="Arena"]
+offset_left = 222.0
+offset_top = 28.0
+offset_right = 280.0
+offset_bottom = 63.0
+theme_override_colors/font_color = Color(0.13, 0.2, 0.16, 1)
+theme_override_font_sizes/font_size = 20
+text = "◇N◇"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerSprite" type="Label" parent="Arena"]
+offset_left = 52.0
+offset_top = 87.0
+offset_right = 112.0
+offset_bottom = 121.0
+theme_override_colors/font_color = Color(0.1, 0.17, 0.14, 1)
+theme_override_font_sizes/font_size = 20
+text = "◢S◣"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemyPanel" type="Panel" parent="Arena"]
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 150.0
+offset_bottom = 62.0
+theme_override_styles/panel = SubResource("PanelStyle")
+[node name="Name" type="Label" parent="Arena/EnemyPanel"]
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 91.0
+offset_bottom = 19.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 10
+text = "NUCIK"
+[node name="Level" type="Label" parent="Arena/EnemyPanel"]
+offset_left = 96.0
+offset_top = 4.0
+offset_right = 130.0
+offset_bottom = 19.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 9
+text = "LV 3"
+horizontal_alignment = 2
+[node name="HPLabel" type="Label" parent="Arena/EnemyPanel"]
+offset_left = 7.0
+offset_top = 25.0
+offset_right = 24.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "HP"
+[node name="HP" type="ProgressBar" parent="Arena/EnemyPanel"]
+offset_left = 27.0
+offset_top = 27.0
+offset_right = 127.0
+offset_bottom = 37.0
+value = 100.0
+show_percentage = false
+theme_override_styles/fill = SubResource("HPStyle")
+
+[node name="PlayerPanel" type="Panel" parent="Arena"]
+offset_left = 170.0
+offset_top = 82.0
+offset_right = 308.0
+offset_bottom = 132.0
+theme_override_styles/panel = SubResource("PanelStyle")
+[node name="Name" type="Label" parent="Arena/PlayerPanel"]
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 91.0
+offset_bottom = 19.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 10
+text = "SOMARI"
+[node name="Level" type="Label" parent="Arena/PlayerPanel"]
+offset_left = 98.0
+offset_top = 4.0
+offset_right = 131.0
+offset_bottom = 19.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 9
+text = "LV 5"
+horizontal_alignment = 2
+[node name="HPLabel" type="Label" parent="Arena/PlayerPanel"]
+offset_left = 7.0
+offset_top = 25.0
+offset_right = 24.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "HP"
+[node name="HP" type="ProgressBar" parent="Arena/PlayerPanel"]
+offset_left = 27.0
+offset_top = 27.0
+offset_right = 129.0
+offset_bottom = 37.0
+value = 100.0
+show_percentage = false
+theme_override_styles/fill = SubResource("HPStyle")
+
+[node name="CommandBox" type="Panel" parent="."]
+offset_left = 117.0
+offset_top = 133.0
+offset_right = 316.0
+offset_bottom = 177.0
+theme_override_styles/panel = SubResource("PanelStyle")
+[node name="C0" type="Label" parent="CommandBox"]
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 99.0
+offset_bottom = 19.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 9
+text = "> WALKA"
+[node name="C1" type="Label" parent="CommandBox"]
+offset_left = 103.0
+offset_top = 4.0
+offset_right = 194.0
+offset_bottom = 19.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 9
+text = "  SOMASKANY"
+[node name="C2" type="Label" parent="CommandBox"]
+offset_left = 7.0
+offset_top = 23.0
+offset_right = 99.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 9
+text = "  PLECAK"
+[node name="C3" type="Label" parent="CommandBox"]
+offset_left = 103.0
+offset_top = 23.0
+offset_right = 194.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 9
+text = "  UCIECZKA"
+
+[node name="MoveBox" type="Panel" parent="."]
+offset_left = 7.0
+offset_top = 126.0
+offset_right = 313.0
+offset_bottom = 177.0
+theme_override_styles/panel = SubResource("PanelStyle")
+visible = false
+[node name="M0" type="Label" parent="MoveBox"]
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 151.0
+offset_bottom = 17.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "> Puls"
+[node name="M1" type="Label" parent="MoveBox"]
+offset_left = 156.0
+offset_top = 4.0
+offset_right = 298.0
+offset_bottom = 17.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "  Ślizg"
+[node name="M2" type="Label" parent="MoveBox"]
+offset_left = 7.0
+offset_top = 19.0
+offset_right = 151.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "  Rezonans"
+[node name="M3" type="Label" parent="MoveBox"]
+offset_left = 156.0
+offset_top = 19.0
+offset_right = 298.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "  Reset"
+[node name="Info" type="Label" parent="MoveBox"]
+offset_left = 7.0
+offset_top = 34.0
+offset_right = 298.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.25, 0.31, 0.29, 1)
+theme_override_font_sizes/font_size = 7
+text = "NERW  MOC 8  CEL 95%"
+
+[node name="MessageBox" type="Panel" parent="."]
+offset_left = 7.0
+offset_top = 127.0
+offset_right = 313.0
+offset_bottom = 177.0
+theme_override_styles/panel = SubResource("PanelStyle")
+visible = false
+[node name="Text" type="Label" parent="MessageBox"]
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 298.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 8
+text = "Dziki Nucik pojawia się!\nA/Z — dalej"
+autowrap_mode = 2
