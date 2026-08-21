@@ -56,16 +56,18 @@ static func all() -> Array[Dictionary]:
 	]
 
 static func get_path(path_id: StringName) -> Dictionary:
-	for path in all():
+	for path: Dictionary in all():
 		if String(path.id) == String(path_id):
 			return path.duplicate(true)
 	return {}
 
 static func get_skill(skill_id: StringName) -> Dictionary:
-	for path in all():
-		for skill in path.skills:
+	for path: Dictionary in all():
+		var skills: Array = path.get("skills", [])
+		for skill_variant in skills:
+			var skill: Dictionary = skill_variant
 			if String(skill.id) == String(skill_id):
-				var result := skill.duplicate(true)
+				var result: Dictionary = skill.duplicate(true)
 				result["path_id"] = path.id
 				return result
 	return {}
