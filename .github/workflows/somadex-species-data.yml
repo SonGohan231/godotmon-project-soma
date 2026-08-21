@@ -1,0 +1,24 @@
+name: SOMADEX Species Data
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  resource-import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    container: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Import and parse all Resource classes
+        run: godot --headless --path . --editor --quit-after 8
+      - name: Verify canonical resource files
+        run: |
+          test -s assets/data/species/starter.tres
+          test -s assets/data/moves/puls.tres
+          test -s assets/data/moves/rezonans.tres
+          test -s src/battle/resonance_state.gd

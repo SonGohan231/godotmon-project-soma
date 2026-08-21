@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="SomaskanSpecies" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/resources/somaskan_species_resource.gd" id="1_species"]
+[ext_resource type="Resource" path="res://assets/data/moves/puls.tres" id="2_puls"]
+[ext_resource type="Resource" path="res://assets/data/moves/rezonans.tres" id="3_rez"]
+
+[resource]
+script = ExtResource("1_species")
+id = &"starter"
+display_name = "Somari"
+form_number = 1
+family_number = 1
+types = Array[StringName]([&"nerw", &"fala"])
+base_hp = 38
+base_attack = 12
+base_defense = 11
+base_speed = 12
+capture_rate = 45
+learnset = Array[ExtResource("1_species")]([ExtResource("2_puls"), ExtResource("3_rez")])
+rarity = &"starter"
