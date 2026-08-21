@@ -32,7 +32,8 @@ static func _draw_species(species_id: StringName, size: int, back_view: bool, fr
 
 	var scale: float = 1.0 if size >= 32 else 0.5
 	var cx: int = int(round(float(size) * 0.50))
-	var cy: int = int(round(float(size) * (0.60 + (0.02 if frame == 1 else 0.0))))
+	var bob: int = 1 if size <= 16 && frame == 1 else 0
+	var cy: int = int(round(float(size) * 0.60)) + bob
 	var rx: int = maxi(3, int(round((5.0 + stage * 2.0) * scale)))
 	var ry: int = maxi(3, int(round((4.0 + stage * 1.7) * scale)))
 	_draw_ellipse(image, cx, cy, rx, ry, primary, outline)
