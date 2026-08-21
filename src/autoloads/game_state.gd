@@ -138,8 +138,14 @@ func apply_dict(data: Dictionary) -> bool:
 	if int(data.get("version", -1)) != SAVE_VERSION:
 		return false
 	trainer = Dictionary(data.get("trainer", {})).duplicate(true)
-	party = Array(data.get("party", [])).duplicate(true)
-	storage = Array(data.get("storage", [])).duplicate(true)
+	party.clear()
+	for raw_member in Array(data.get("party", [])):
+		if typeof(raw_member) == TYPE_DICTIONARY:
+			party.append(Dictionary(raw_member).duplicate(true))
+	storage.clear()
+	for raw_member in Array(data.get("storage", [])):
+		if typeof(raw_member) == TYPE_DICTIONARY:
+			storage.append(Dictionary(raw_member).duplicate(true))
 	bag = Dictionary(data.get("bag", {})).duplicate(true)
 	quest_flags = Dictionary(data.get("quest_flags", {})).duplicate(true)
 	world = Dictionary(data.get("world", {})).duplicate(true)
