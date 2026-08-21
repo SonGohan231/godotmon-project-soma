@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - somadex-v2-vertical-slice
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
