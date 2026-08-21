@@ -16,5 +16,5 @@ jobs:
         uses: actions/checkout@v4
       - name: Import and compile project
         run: godot --headless --path . --editor --quit-after 8
-      - name: Verify trainers healing checkpoints and pickups
-        run: timeout 60s godot --headless --path . --script res://tests/world_gameplay_smoke.gd
+      - name: Verify trainers healing checkpoints and pickups in full runtime
+        run: timeout 60s godot --headless --path . res://tests/world_gameplay_smoke.tscn
