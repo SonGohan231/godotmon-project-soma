@@ -46,7 +46,10 @@ func reset_new_game() -> void:
 		"facing_y": 1
 	}
 
-func _make_somaskan(species_id: StringName, level: int, hp: int, moves: Array[StringName]) -> Dictionary:
+func _make_somaskan(species_id: StringName, level: int, hp: int, moves: Array) -> Dictionary:
+	var serialized_moves: Array[String] = []
+	for move_id in moves:
+		serialized_moves.append(String(move_id))
 	return {
 		"uid": "%s-%s-%d" % [String(species_id), Time.get_unix_time_from_system(), randi()],
 		"species_id": String(species_id),
@@ -55,7 +58,7 @@ func _make_somaskan(species_id: StringName, level: int, hp: int, moves: Array[St
 		"xp": 0,
 		"current_hp": hp,
 		"status": "",
-		"moves": moves.map(func(move_id: StringName): return String(move_id))
+		"moves": serialized_moves
 	}
 
 func add_item(item_id: StringName, amount: int = 1) -> int:
@@ -109,7 +112,7 @@ func set_world_spawn(map_id: StringName, tile: Vector2i, facing: Vector2i = Vect
 		"facing_y": facing.y
 	}
 
-func add_captured_somaskan(species_id: StringName, level: int, hp: int, moves: Array[StringName]) -> String:
+func add_captured_somaskan(species_id: StringName, level: int, hp: int, moves: Array) -> String:
 	var entry := _make_somaskan(species_id, level, hp, moves)
 	if party.size() < 6:
 		party.append(entry)
