@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/maps/test map.tscn" id="1_map"]
+[ext_resource type="PackedScene" path="res://assets/templates/npc.tscn" id="2_npc"]
+
+[node name="Vela" type="Node2D"]
+y_sort_enabled = true
+
+[node name="TileWorld" parent="." instance=ExtResource("1_map")]
+
+[node name="Lira" parent="." instance=ExtResource("2_npc")]
+position = Vector2(128, 80)
+modulate = Color(0.68, 0.84, 1, 1)
+display_name = "Lira"
+dialogue_text = "Witaj w Veli. To pierwszy fragment nowego świata SOMADEX.|Miasto jest budowane z prawdziwych kafelków, a nie z prostokątów rysowanych kodem.|Na północy znajdziesz laboratorium. Na wschodzie zaczyna się pierwsza trasa."
+
+[node name="Badacz" parent="." instance=ExtResource("2_npc")]
+position = Vector2(176, 112)
+modulate = Color(0.78, 1, 0.74, 1)
+display_name = "Badacz"
+dialogue_text = "W wysokiej trawie żyją dzikie Somaskany.|Niedługo będziemy mogli badać ich ślady i rozpoczynać spotkania bez opuszczania tej architektury świata."
+
+[node name="Mieszkanka" parent="." instance=ExtResource("2_npc")]
+position = Vector2(96, 144)
+modulate = Color(1, 0.72, 0.78, 1)
+display_name = "Mieszkanka Veli"
+dialogue_text = "Dobrze, że tu jesteś. Vela wreszcie zaczyna wyglądać jak prawdziwe miejsce, a nie plansza testowa."
