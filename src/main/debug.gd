@@ -2,7 +2,7 @@ extends Node
 
 # SOMADEX V2 vertical-slice bootstrap.
 # Real TileMapLayer world, scene-based player/NPC/UI, handheld touch controls,
-# and a separate battle scene layered through UiParent.
+# separate battle scene and persistent GameState-backed menus.
 
 func _ready() -> void:
 	await get_tree().process_frame
@@ -21,14 +21,17 @@ func _ready() -> void:
 			var lira := get_tree().root.get_node_or_null("Main/WorldParent/Vela/Lira")
 			if lira != null:
 				lira.interact()
-		elif qa_mode == "menu":
+		elif qa_mode == "menu" || qa_mode == "menu_party":
 			var menu := get_tree().get_first_node_in_group("start_menu")
 			if menu != null:
 				menu.open_menu()
+				if qa_mode == "menu_party":
+					menu._activate_selected()
 		elif qa_mode == "battle":
 			var battle := get_tree().get_first_node_in_group("battle_ui")
 			if battle != null:
 				battle.start_battle(&"nucik", 4, Vector2(160, 96))
+				battle._finish_message()
 		await get_tree().create_timer(0.35).timeout
 		_capture_runtime(OS.get_environment("SOMADEX_CAPTURE_PATH"))
 		return
