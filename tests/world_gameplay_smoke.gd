@@ -1,6 +1,6 @@
-extends SceneTree
+extends Node
 
-func _init() -> void:
+func _ready() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
@@ -16,8 +16,8 @@ func _run() -> void:
 		_fail("battle screen did not load")
 		return
 	var battle = packed.instantiate()
-	root.add_child(battle)
-	await process_frame
+	add_child(battle)
+	await get_tree().process_frame
 	battle.start_trainer_battle(&"vela_scout", Vector2(160, 96))
 	if !battle.trainer_mode || String(battle.enemy_species_id) != "nucik" || battle.mode != BattleScreen.Mode.MESSAGE:
 		_fail("trainer battle did not start with first roster member")
@@ -42,7 +42,7 @@ func _run() -> void:
 		_fail("trainer reward was not persisted")
 		return
 	battle._finish_message()
-	await create_timer(0.25).timeout
+	await get_tree().create_timer(0.25).timeout
 	if Observer.battle_open:
 		_fail("trainer battle did not return control to overworld")
 		return
@@ -53,7 +53,7 @@ func _run() -> void:
 	member["status"] = BattleStatus.PRZEGRZANIE
 	GameState.party[0] = member
 	var station := SomadexHealingStation.new()
-	root.add_child(station)
+	add_child(station)
 	station.interact(null)
 	var healed: Dictionary = GameState.party[0]
 	var species := CreatureDex.get_species(StringName(healed.get("species_id", "starter")))
@@ -71,7 +71,7 @@ func _run() -> void:
 	pickup.pickup_id = &"qa_capsules"
 	pickup.reward_id = &"capsule"
 	pickup.amount = 2
-	root.add_child(pickup)
+	add_child(pickup)
 	pickup.interact()
 	pickup.interact()
 	if int(GameState.bag.get("capsule", 0)) != capsules_before + 2:
@@ -80,15 +80,15 @@ func _run() -> void:
 	var tm_pickup := SomadexWorldPickup.new()
 	tm_pickup.pickup_id = &"qa_tm0002"
 	tm_pickup.reward_id = &"TM0002"
-	root.add_child(tm_pickup)
+	add_child(tm_pickup)
 	tm_pickup.interact()
 	if !GameState.has_tm(&"TM0002"):
 		_fail("world TM pickup did not unlock TM0002")
 		return
 
 	print("SOMADEX_WORLD_GAMEPLAY_PASS trainers=2 heal=1 pickups=2")
-	quit(0)
+	get_tree().quit(0)
 
 func _fail(message: String) -> void:
 	push_error("SOMADEX_WORLD_GAMEPLAY_FAIL: " + message)
-	quit(1)
+	get_tree().quit(1)
