@@ -27,11 +27,20 @@ func _ready() -> void:
 				menu.open_menu()
 				if qa_mode == "menu_party":
 					menu._activate_selected()
-		elif qa_mode == "battle":
-			var battle := get_tree().get_first_node_in_group("battle_ui")
+		elif qa_mode.begins_with("battle"):
+			var battle := get_tree().get_first_node_in_group("battle_ui") as BattleScreen
 			if battle != null:
-				battle.start_battle(&"nucik", 4, Vector2(160, 96))
+				if qa_mode == "battle_party":
+					GameState.add_captured_somaskan(&"nucik", 4, 18, SomaskanCatalog.move_ids(&"nucik"))
+				battle.start_battle(&"wahlik", 4, Vector2(160, 96))
 				battle._finish_message()
+				match qa_mode:
+					"battle_party": battle._open_party(false)
+					"battle_bag": battle._open_bag()
+					"battle_rez":
+						battle._resonance.value = ResonanceState.MAX_VALUE
+						battle._set_mode(BattleScreen.Mode.MOVES)
+						battle._refresh_resonance()
 		await get_tree().create_timer(0.35).timeout
 		_capture_runtime(OS.get_environment("SOMADEX_CAPTURE_PATH"))
 		return
