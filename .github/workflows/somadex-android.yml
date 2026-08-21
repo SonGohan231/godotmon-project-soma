@@ -1,0 +1,65 @@
+name: SOMADEX Android Gameplay Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  android-gameplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    container: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Godot Android templates and editor SDK paths
+        run: |
+          mkdir -p "$HOME/.local/share/godot/export_templates" "$HOME/.config"
+          cp -a /root/.local/share/godot/export_templates/4.4.1.stable "$HOME/.local/share/godot/export_templates/4.4.1.stable"
+          cp -a /root/.config/godot "$HOME/.config/godot"
+          test -s "$HOME/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk"
+          test -s "$HOME/.config/godot/editor_settings-4.4.tres"
+
+      - name: Import and compile project
+        run: godot --headless --path . --editor --quit-after 8
+
+      - name: Exercise battle party bag and Rezonans runtime
+        run: timeout 30s godot --headless --path . res://tests/battle_runtime_smoke.tscn
+
+      - name: Exercise real touchscreen hitboxes and actions
+        run: timeout 30s godot --headless --path . --script res://tests/mobile_touch_smoke.gd
+
+      - name: Prepare Android debug signing
+        run: |
+          mkdir -p "$HOME/.android" build
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkeypair -v \
+              -keystore "$HOME/.android/debug.keystore" \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=SOMADEX,C=PL"
+          fi
+
+      - name: Export Android debug APK
+        env:
+          GODOT_ANDROID_KEYSTORE_DEBUG_PATH: /github/home/.android/debug.keystore
+          GODOT_ANDROID_KEYSTORE_DEBUG_USER: androiddebugkey
+          GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD: android
+        run: |
+          godot --headless --path . --export-debug "Android" build/SOMADEX-debug.apk
+          test -s build/SOMADEX-debug.apk
+          sha256sum build/SOMADEX-debug.apk | tee build/SOMADEX-debug.sha256
+
+      - name: Upload installable Android build
+        uses: actions/upload-artifact@v4
+        with:
+          name: SOMADEX-V2-Android-debug
+          path: |
+            build/SOMADEX-debug.apk
+            build/SOMADEX-debug.sha256
+          if-no-files-found: error
