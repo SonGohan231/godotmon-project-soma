@@ -9,6 +9,7 @@ var menu_open: bool = false
 signal transition_started
 signal transition_finished
 signal encounter_requested(species_id: StringName, level: int, world_position: Vector2)
+signal trainer_battle_requested(trainer_id: StringName, world_position: Vector2)
 signal dialogue_state_changed(opened: bool)
 signal battle_state_changed(opened: bool)
 signal menu_state_changed(opened: bool)

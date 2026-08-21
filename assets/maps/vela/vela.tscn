@@ -1,9 +1,12 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/maps/test map.tscn" id="1_map"]
 [ext_resource type="PackedScene" path="res://assets/templates/npc.tscn" id="2_npc"]
 [ext_resource type="Script" path="res://src/world/encounter_zone.gd" id="3_encounter"]
 [ext_resource type="Resource" path="res://assets/data/encounters/vela_grass.tres" id="4_table"]
+[ext_resource type="PackedScene" path="res://assets/templates/trainer_npc.tscn" id="5_trainer"]
+[ext_resource type="PackedScene" path="res://assets/templates/healing_station.tscn" id="6_heal"]
+[ext_resource type="PackedScene" path="res://assets/templates/world_pickup.tscn" id="7_pickup"]
 
 [sub_resource type="RectangleShape2D" id="GrassEncounterShape"]
 size = Vector2(96, 48)
@@ -17,19 +20,55 @@ y_sort_enabled = true
 position = Vector2(128, 80)
 modulate = Color(0.68, 0.84, 1, 1)
 display_name = "Lira"
-dialogue_text = "Witaj w Veli. To pierwszy fragment nowego świata SOMADEX.|Miasto jest budowane z prawdziwych kafelków, a nie z prostokątów rysowanych kodem.|Na północy znajdziesz laboratorium. Na wschodzie zaczyna się pierwsza trasa."
+dialogue_text = "Witaj w Veli. To pierwszy fragment nowego świata SOMADEX.|Na wschodzie czekają trenerzy. Wysoka trawa prowadzi do dzikich spotkań.|Punkt Regeneracji leczy drużynę i zapisuje bezpieczny checkpoint."
 
 [node name="Badacz" parent="." instance=ExtResource("2_npc")]
 position = Vector2(176, 112)
 modulate = Color(0.78, 1, 0.74, 1)
 display_name = "Badacz"
-dialogue_text = "W wysokiej trawie żyją dzikie Somaskany.|Niedługo będziemy mogli badać ich ślady i rozpoczynać spotkania bez opuszczania tej architektury świata."
+dialogue_text = "W wysokiej trawie żyją dzikie Somaskany.|Szukaj złotych znaczników. Niektóre ukrywają Kapsuły, inne Techniki TM."
 
 [node name="Mieszkanka" parent="." instance=ExtResource("2_npc")]
 position = Vector2(96, 144)
 modulate = Color(1, 0.72, 0.78, 1)
 display_name = "Mieszkanka Veli"
-dialogue_text = "Dobrze, że tu jesteś. Vela wreszcie zaczyna wyglądać jak prawdziwe miejsce, a nie plansza testowa."
+dialogue_text = "Po przegranej walce wróć do Punktu Regeneracji.|Trenerzy pamiętają zwycięstwo — po pokonaniu nie blokują cię ponowną walką."
+
+[node name="Regeneracja" parent="." instance=ExtResource("6_heal")]
+position = Vector2(144, 144)
+station_name = "Punkt Regeneracji Veli"
+map_id = &"vela"
+
+[node name="Mira" parent="." instance=ExtResource("5_trainer")]
+position = Vector2(224, 96)
+modulate = Color(0.72, 0.90, 1, 1)
+trainer_id = &"vela_scout"
+
+[node name="Toren" parent="." instance=ExtResource("5_trainer")]
+position = Vector2(240, 128)
+modulate = Color(0.92, 0.72, 1, 1)
+trainer_id = &"vela_adept"
+
+[node name="CapsulePickup" parent="." instance=ExtResource("7_pickup")]
+position = Vector2(64, 64)
+pickup_id = &"vela_capsules_01"
+reward_id = &"capsule"
+amount = 2
+pickup_name = "Skrytka przy ścieżce"
+
+[node name="TMPickup" parent="." instance=ExtResource("7_pickup")]
+position = Vector2(208, 144)
+pickup_id = &"vela_tm0002"
+reward_id = &"TM0002"
+amount = 1
+pickup_name = "Nośnik Techniki"
+
+[node name="CreditsPickup" parent="." instance=ExtResource("7_pickup")]
+position = Vector2(80, 112)
+pickup_id = &"vela_credits_01"
+reward_id = &"credits"
+amount = 60
+pickup_name = "Zgubiona sakiewka"
 
 [node name="GrassEncounterZone" type="Area2D" parent="."]
 position = Vector2(192, 64)

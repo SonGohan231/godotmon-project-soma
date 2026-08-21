@@ -1,0 +1,20 @@
+name: SOMADEX World Gameplay Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  world-gameplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    container: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Import and compile project
+        run: godot --headless --path . --editor --quit-after 8
+      - name: Verify trainers healing checkpoints and pickups in full runtime
+        run: timeout 60s godot --headless --path . res://tests/world_gameplay_smoke.tscn

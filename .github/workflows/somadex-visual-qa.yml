@@ -69,6 +69,13 @@ jobs:
           export SOMADEX_QA_MODE=battle
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_battle_touch.png
+      - name: Capture trainer battle composition with touch controls
+        run: |
+          export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_trainer_battle_touch.png"
+          export SOMADEX_QA_SHOW_TOUCH=1
+          export SOMADEX_QA_MODE=battle_trainer
+          timeout 30s xvfb-run -a godot --path . --display-driver x11
+          test -s qa/vela_trainer_battle_touch.png
       - name: Capture battle party selector with touch controls
         run: |
           export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_battle_party_touch.png"
@@ -100,6 +107,6 @@ jobs:
       - name: Upload runtime screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: somadex-v2-dex-types-tm-qa
+          name: somadex-v2-world-gameplay-qa
           path: qa/*.png
           if-no-files-found: error

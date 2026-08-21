@@ -29,11 +29,14 @@ func _ready() -> void:
 					"menu_dex": menu._open_dex()
 					"menu_tm": menu._open_tm()
 		elif qa_mode.begins_with("battle"):
-			var battle := get_tree().get_first_node_in_group("battle_ui") as BattleScreen
+			var battle = get_tree().get_first_node_in_group("battle_ui")
 			if battle != null:
 				if qa_mode == "battle_party":
 					GameState.add_captured_somaskan(&"nucik", 4, 18, SomaskanCatalog.move_ids(&"nucik"))
-				battle.start_battle(&"wahlik", 4, Vector2(160, 96))
+				if qa_mode == "battle_trainer" && battle.has_method("start_trainer_battle"):
+					battle.start_trainer_battle(&"vela_scout", Vector2(160, 96))
+				else:
+					battle.start_battle(&"wahlik", 4, Vector2(160, 96))
 				battle._finish_message()
 				match qa_mode:
 					"battle_party": battle._open_party(false)
