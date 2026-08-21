@@ -5,6 +5,13 @@
 
 [node name="Player" instance=ExtResource("1_base")]
 
+[node name="Camera2D" parent="."]
+limit_left = 0
+limit_top = 0
+limit_right = 384
+limit_bottom = 256
+limit_smoothed = false
+
 [node name="Interaction" type="Node" parent="."]
 script = ExtResource("2_interact")
 
