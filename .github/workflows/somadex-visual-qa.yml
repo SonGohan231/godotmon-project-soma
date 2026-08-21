@@ -34,13 +34,21 @@ jobs:
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_overworld.png
 
-      - name: Capture Android touch composition
+      - name: Capture handheld touch composition
         run: |
           export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_mobile.png"
           export SOMADEX_QA_SHOW_TOUCH=1
           unset SOMADEX_QA_MODE
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_mobile.png
+
+      - name: Capture START menu composition
+        run: |
+          export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_start_menu.png"
+          export SOMADEX_QA_SHOW_TOUCH=1
+          export SOMADEX_QA_MODE=menu
+          timeout 30s xvfb-run -a godot --path . --display-driver x11
+          test -s qa/vela_start_menu.png
 
       - name: Capture NPC dialogue composition
         run: |
