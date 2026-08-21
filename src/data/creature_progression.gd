@@ -48,9 +48,10 @@ static func apply_xp(member: Dictionary, amount: int) -> Dictionary:
 		if !evolution.is_empty():
 			var old_name := String(species.get("name", ""))
 			species = evolution
-			updated["species_id"] = String(species.get("species_id", updated.get("species_id", "starter")))
+			var evolved_id := String(species.get("species_id", updated.get("species_id", "starter")))
+			updated["species_id"] = evolved_id
 			var evolutions: Array = result.get("evolutions", [])
-			evolutions.append({"from":old_name,"to":String(species.get("name", "")),"level":level})
+			evolutions.append({"from":old_name,"to":String(species.get("name", "")),"species_id":evolved_id,"level":level})
 			result["evolutions"] = evolutions
 
 	if level >= LEVEL_CAP:
