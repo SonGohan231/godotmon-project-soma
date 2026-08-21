@@ -10,12 +10,18 @@ func _run() -> void:
 	if packed == null:
 		_fail("advanced battle screen did not load")
 		return
-	var battle := packed.instantiate() as BattleScreen
+	var battle := packed.instantiate() as SomadexBattleScreen
 	add_child(battle)
 	await get_tree().process_frame
 	battle.start_battle(&"wahlik", 4)
 	if !Observer.battle_open || !GameState.is_seen(CreatureDex.dex_index_for_species(&"wahlik")):
 		_fail("battle did not lock world or mark enemy as seen")
+		return
+	if !is_instance_valid(battle._enemy_pixel) || !is_instance_valid(battle._player_pixel):
+		_fail("live battle did not create pixel front/back sprites")
+		return
+	if battle._enemy_pixel.texture == null || battle._player_pixel.texture == null:
+		_fail("live battle pixel sprites have no textures")
 		return
 	await _tap("ui_accept")
 	if battle.mode != BattleScreen.Mode.COMMAND:
@@ -35,11 +41,15 @@ func _run() -> void:
 	battle._load_active_from_state()
 	battle.player_current_hp = maxi(1, int(battle.player_hp.max_value) - 10)
 	battle._sync_player_hp()
+	battle._set_player_status(BattleStatus.NAPIECIE)
 	var bandages_before := int(GameState.bag.get("bandage", 0))
 	var hp_before := battle.player_current_hp
 	battle._use_bandage()
 	if int(GameState.bag.get("bandage", 0)) != bandages_before - 1 || battle.player_current_hp <= hp_before:
 		_fail("persistent battle bandage failed")
+		return
+	if !battle._player_status().is_empty():
+		_fail("battle bandage did not clear status")
 		return
 	battle._resonance.value = ResonanceState.MAX_VALUE
 	battle._resonance_armed = false
