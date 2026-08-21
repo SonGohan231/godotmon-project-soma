@@ -9,6 +9,7 @@ on:
 jobs:
   gamestate-smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     container: barichello/godot-ci:4.4.1
     steps:
       - name: Checkout
@@ -18,4 +19,4 @@ jobs:
         run: godot --headless --path . --editor --quit-after 5
 
       - name: Run persistent state roundtrip
-        run: godot --headless --path . --script res://tests/game_state_smoke.gd
+        run: timeout 30s godot --headless --path . --script res://tests/game_state_smoke.gd
