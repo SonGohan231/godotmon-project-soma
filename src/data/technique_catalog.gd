@@ -53,6 +53,8 @@ static func _decode(type_name: String, packed: String) -> Dictionary:
 	var tm_id := p[0]
 	var power := int(p[2])
 	var accuracy := float(p[3])
+	var tm_number := int(String(tm_id).trim_prefix("TM"))
+	var status_chance := 0.15 if tm_number % 2 == 1 else 0.28
 	return {
 		"tm_id":tm_id,
 		"name":p[1],
@@ -66,6 +68,8 @@ static func _decode(type_name: String, packed: String) -> Dictionary:
 			"accuracy":accuracy,
 			"resonance_gain":12,
 			"priority":0,
-			"source":"TM"
+			"source":"TM",
+			"status":BattleStatus.status_for_type(type_name),
+			"status_chance":status_chance
 		}
 	}
