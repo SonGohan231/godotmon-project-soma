@@ -1,0 +1,21 @@
+name: SOMADEX GameState Smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  gamestate-smoke:
+    runs-on: ubuntu-latest
+    container: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Import project
+        run: godot --headless --path . --editor --quit-after 5
+
+      - name: Run persistent state roundtrip
+        run: godot --headless --path . --script res://tests/game_state_smoke.gd
