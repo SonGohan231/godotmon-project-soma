@@ -1,6 +1,9 @@
 extends RefCounted
 class_name SomadexBattleMath
 
+const MIN_DAMAGE_HP_RATIO := 0.06
+const MAX_DAMAGE_HP_RATIO := 0.48
+
 static func max_hp(species: Dictionary, level: int) -> int:
 	return maxi(1, int(species.get("max_hp", 20)) + maxi(0, level - 1) * 2)
 
@@ -12,11 +15,17 @@ static func damage(move: Dictionary, attacker_level: int, defender_level: int, a
 	var total := SomadexTypeChart.total_multiplier(attack_type, attacker_types, defender_types)
 	var attack_stat := maxf(1.0, float(attacker.get("attack", 10)))
 	var defense_stat := maxf(1.0, float(defender.get("defense", 10)))
-	var stat_ratio := clampf(attack_stat / defense_stat, 0.68, 1.42)
+	# Narrowing the extreme stat-ratio range prevents defensive families from turning
+	# equal-level fights into 20+ turn stalls while preserving meaningful bulk.
+	var stat_ratio := clampf(attack_stat / defense_stat, 0.78, 1.36)
 	var base := float(move.get("power", 1)) * (0.70 + maxi(1, attacker_level) * 0.038) * stat_ratio
-	var dealt := maxi(1, int(round(base * total * clampf(random_factor, 0.90, 1.10))))
 	var defender_hp := max_hp(defender, defender_level)
-	dealt = mini(dealt, maxi(2, int(round(defender_hp * 0.48))))
+	var dealt := maxi(1, int(round(base * total * clampf(random_factor, 0.90, 1.10))))
+	# Every damaging move has a very small HP-relative floor. It does not override
+	# type advantage, STAB or stats; it only prevents pathological stalemates.
+	var pace_floor := maxi(1, int(ceil(float(defender_hp) * MIN_DAMAGE_HP_RATIO)))
+	dealt = maxi(pace_floor, dealt)
+	dealt = mini(dealt, maxi(2, int(round(float(defender_hp) * MAX_DAMAGE_HP_RATIO))))
 	return {"damage":dealt,"effectiveness":effectiveness,"stab":SomadexTypeChart.stab(attack_type, attacker_types),"total":total}
 
 static func expected_hits_to_ko(move: Dictionary, attacker_level: int, defender_level: int, attacker: Dictionary, defender: Dictionary) -> int:
