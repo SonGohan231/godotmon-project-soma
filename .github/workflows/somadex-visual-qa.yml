@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - somadex-v2-vertical-slice
+      - somadex-v2-battle-integrated
   pull_request:
     branches:
       - main
@@ -16,15 +17,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install virtual display
         run: |
           apt-get update
           apt-get install -y xvfb
-
       - name: Import and parse project
         run: godot --headless --path . --editor --quit-after 5
-
       - name: Capture clean overworld runtime
         run: |
           mkdir -p qa
@@ -33,7 +31,6 @@ jobs:
           unset SOMADEX_QA_MODE
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_overworld.png
-
       - name: Capture handheld touch composition
         run: |
           export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_mobile.png"
@@ -41,7 +38,6 @@ jobs:
           unset SOMADEX_QA_MODE
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_mobile.png
-
       - name: Capture START menu composition
         run: |
           export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_start_menu.png"
@@ -49,7 +45,13 @@ jobs:
           export SOMADEX_QA_MODE=menu
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_start_menu.png
-
+      - name: Capture battle composition
+        run: |
+          export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_battle.png"
+          unset SOMADEX_QA_SHOW_TOUCH
+          export SOMADEX_QA_MODE=battle
+          timeout 30s xvfb-run -a godot --path . --display-driver x11
+          test -s qa/vela_battle.png
       - name: Capture NPC dialogue composition
         run: |
           export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_dialogue.png"
@@ -57,10 +59,9 @@ jobs:
           export SOMADEX_QA_MODE=dialogue
           timeout 30s xvfb-run -a godot --path . --display-driver x11
           test -s qa/vela_dialogue.png
-
       - name: Upload runtime screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: somadex-v2-functional-vela-qa
+          name: somadex-v2-integrated-battle-qa
           path: qa/*.png
           if-no-files-found: error

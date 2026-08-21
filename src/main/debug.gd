@@ -1,8 +1,8 @@
 extends Node
 
 # SOMADEX V2 vertical-slice bootstrap.
-# Production direction: real TileMapLayer world, scene-based player/NPC/UI,
-# handheld-style touch controls and reusable interaction/dialogue systems.
+# Real TileMapLayer world, scene-based player/NPC/UI, handheld touch controls,
+# and a separate battle scene layered through UiParent.
 
 func _ready() -> void:
 	await get_tree().process_frame
@@ -10,10 +10,10 @@ func _ready() -> void:
 	ScenesManager.add_scene("res://assets/maps/vela/vela.tscn", ScenesManager.SceneType.WORLD)
 	ScenesManager.add_scene("res://assets/templates/somadex_player.tscn", ScenesManager.SceneType.ENTITY, Vector2i(5, 5))
 	ScenesManager.add_scene("res://assets/ui/dialogue_box.tscn", ScenesManager.SceneType.UI)
+	ScenesManager.add_scene("res://assets/ui/battle_screen.tscn", ScenesManager.SceneType.UI)
 	ScenesManager.add_scene("res://assets/ui/start_menu.tscn", ScenesManager.SceneType.UI)
 	ScenesManager.add_scene("res://assets/ui/mobile_controls.tscn", ScenesManager.SceneType.UI)
 
-	# Visual QA mode used by CI. Captures the actual Godot runtime viewport.
 	if OS.has_environment("SOMADEX_CAPTURE_PATH"):
 		await get_tree().process_frame
 		var qa_mode := OS.get_environment("SOMADEX_QA_MODE")
@@ -25,6 +25,10 @@ func _ready() -> void:
 			var menu := get_tree().get_first_node_in_group("start_menu")
 			if menu != null:
 				menu.open_menu()
+		elif qa_mode == "battle":
+			var battle := get_tree().get_first_node_in_group("battle_ui")
+			if battle != null:
+				battle.start_battle(&"nucik", 4, Vector2(160, 96))
 		await get_tree().create_timer(0.35).timeout
 		_capture_runtime(OS.get_environment("SOMADEX_CAPTURE_PATH"))
 		return
