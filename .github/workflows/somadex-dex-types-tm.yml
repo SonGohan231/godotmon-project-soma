@@ -20,3 +20,5 @@ jobs:
         run: timeout 45s godot --headless --path . --script res://tests/dex_types_tm_smoke.gd
       - name: Verify evolution XP statuses AI and v3 migration
         run: timeout 45s godot --headless --path . --script res://tests/progression_status_ai_smoke.gd
+      - name: Verify 150 front back and animated mini pixel sprites
+        run: timeout 45s godot --headless --path . --script res://tests/creature_pixel_art_smoke.gd
