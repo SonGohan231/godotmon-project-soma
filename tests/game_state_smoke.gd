@@ -1,6 +1,6 @@
 extends SceneTree
 
-func _initialize() -> void:
+func _init() -> void:
 	var state_script = load("res://src/autoloads/game_state.gd")
 	if state_script == null:
 		_fail("GameState script did not load")
