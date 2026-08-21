@@ -4,7 +4,6 @@ func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	# Status contract and cross-type interaction.
 	if BattleStatus.status_for_type("OGIEN") != BattleStatus.PRZEGRZANIE:
 		_fail("OGIEN must map to PRZEGRZANIE")
 		return
@@ -18,9 +17,8 @@ func _run() -> void:
 		_fail("MOKRY must soften OGIEN damage")
 		return
 
-	# AI must prefer a type-advantaged attack over a similar neutral move.
-	var attacker := {"types":["PIEZO"],"attack":12}
-	var defender := {"types":["ODDECH"],"defense":12}
+	var attacker: Dictionary = {"types":["PIEZO"],"attack":12}
+	var defender: Dictionary = {"types":["ODDECH"],"defense":12}
 	var moves: Array = [
 		{"id":"neutral","type":"KONTAKT","power":11,"accuracy":1.0,"status_chance":0.0},
 		{"id":"piezo","type":"PIEZO","power":10,"accuracy":0.95,"status":BattleStatus.NAPIECIE,"status_chance":0.2}
@@ -29,12 +27,11 @@ func _run() -> void:
 		_fail("AI did not choose the advantageous PIEZO move")
 		return
 
-	# First evolution: Luzik -> Warstwin at the configured level.
-	var luzik := CreatureDex.get_species(&"luzik")
-	var level := int(luzik.get("evolution_level", 0)) - 1
-	var hp := SomadexBattleMath.max_hp(luzik, level)
-	var member := {"uid":"evo-test","species_id":"luzik","nickname":"","level":level,"xp":0,"current_hp":hp,"status":"","moves":SomadexMoveCatalog.natural_move_ids(Array(luzik.types), 1)}
-	var first := CreatureProgression.apply_xp(member, CreatureProgression.xp_to_next(level))
+	var luzik: Dictionary = CreatureDex.get_species(&"luzik")
+	var level: int = int(luzik.get("evolution_level", 0)) - 1
+	var hp: int = SomadexBattleMath.max_hp(luzik, level)
+	var member: Dictionary = {"uid":"evo-test","species_id":"luzik","nickname":"","level":level,"xp":0,"current_hp":hp,"status":"","moves":SomadexMoveCatalog.natural_move_ids(Array(luzik.types), 1)}
+	var first: Dictionary = CreatureProgression.apply_xp(member, CreatureProgression.xp_to_next(level))
 	var first_member: Dictionary = first.get("member", {})
 	if String(first_member.get("species_id", "")) != "warstwin":
 		_fail("Luzik did not evolve into Warstwin")
@@ -43,19 +40,17 @@ func _run() -> void:
 		_fail("first evolution result did not report the level/evolution")
 		return
 
-	# Second evolution is also data-driven and can happen after continued XP gain.
-	var second_target := CreatureDex.get_species(&"warstwin")
-	var final_level := int(second_target.get("evolution_level", 0))
-	var xp_needed := 0
+	var second_target: Dictionary = CreatureDex.get_species(&"warstwin")
+	var final_level: int = int(second_target.get("evolution_level", 0))
+	var xp_needed: int = 0
 	for current_level in range(int(first_member.level), final_level):
 		xp_needed += CreatureProgression.xp_to_next(current_level)
-	var second := CreatureProgression.apply_xp(first_member, xp_needed)
+	var second: Dictionary = CreatureProgression.apply_xp(first_member, xp_needed)
 	var final_member: Dictionary = second.get("member", {})
 	if String(final_member.get("species_id", "")) != "synkronaut":
 		_fail("Warstwin did not evolve into Synkronaut")
 		return
 
-	# Real GameState award path must persist creature progression and mark evolution in SOMADEX.
 	var state_script = load("res://src/autoloads/game_state.gd")
 	var state = state_script.new()
 	state.reset_new_game()
@@ -65,7 +60,7 @@ func _run() -> void:
 	starter["xp"] = CreatureProgression.xp_to_next(level) - 1
 	starter["current_hp"] = SomadexBattleMath.max_hp(luzik, level)
 	state.party[0] = starter
-	var award := state.award_somaskan_xp(0, 1)
+	var award: Dictionary = state.award_somaskan_xp(0, 1)
 	if String(state.party[0].get("species_id", "")) != "warstwin" || Array(award.get("evolutions", [])).is_empty():
 		_fail("GameState did not persist evolution")
 		return
@@ -73,13 +68,16 @@ func _run() -> void:
 		_fail("evolved form was not registered as caught in SOMADEX")
 		return
 
-	# Version 2 saves remain loadable after progression fields were added in v3.
-	var v2 := state.to_dict()
+	var v2: Dictionary = state.to_dict()
 	v2["version"] = 2
-	for raw in Array(v2.party):
+	var v2_party: Array = []
+	for raw in Array(v2.get("party", [])):
 		if typeof(raw) == TYPE_DICTIONARY:
-			Dictionary(raw).erase("friendship")
-			Dictionary(raw).erase("battles_won")
+			var old_member: Dictionary = Dictionary(raw).duplicate(true)
+			old_member.erase("friendship")
+			old_member.erase("battles_won")
+			v2_party.append(old_member)
+	v2["party"] = v2_party
 	var migrated = state_script.new()
 	if !migrated.apply_dict(v2):
 		_fail("save v2 did not migrate to v3")
