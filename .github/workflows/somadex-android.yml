@@ -15,6 +15,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Godot Android templates and editor SDK paths
+        run: |
+          mkdir -p "$HOME/.local/share/godot/export_templates" "$HOME/.config"
+          cp -a /root/.local/share/godot/export_templates/4.4.1.stable "$HOME/.local/share/godot/export_templates/4.4.1.stable"
+          cp -a /root/.config/godot "$HOME/.config/godot"
+          test -s "$HOME/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk"
+          test -s "$HOME/.config/godot/editor_settings-4.4.tres"
+
       - name: Import and compile project
         run: godot --headless --path . --editor --quit-after 8
 
