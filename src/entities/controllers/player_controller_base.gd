@@ -6,7 +6,7 @@ var running_requested: bool
 var ghost_movement_requested: bool
 
 func update() -> void:
-	if Observer.dialogue_open:
+	if Observer.world_input_locked():
 		current_direction = Vector2.ZERO
 		running_requested = false
 		ghost_movement_requested = false
