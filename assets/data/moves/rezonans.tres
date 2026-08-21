@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SomadexMoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/resources/somadex_move_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"rezonans"
+display_name = "Rezonans"
+element_id = &"fala"
+power = 9
+accuracy = 90
+use_count = 10
+priority = 0
+resonance_gain = 18
+tags = Array[StringName]([&"rezonans", &"fala"])
