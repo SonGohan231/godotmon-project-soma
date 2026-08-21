@@ -1,0 +1,31 @@
+[gd_resource type="Resource" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/resources/encounter_table_resource.gd" id="1_table"]
+[ext_resource type="Script" path="res://src/resources/encounter_entry_resource.gd" id="2_entry"]
+
+[sub_resource type="Resource" id="NucikEntry"]
+script = ExtResource("2_entry")
+species_id = &"nucik"
+min_level = 2
+max_level = 4
+weight = 50
+
+[sub_resource type="Resource" id="WahlikEntry"]
+script = ExtResource("2_entry")
+species_id = &"wahlik"
+min_level = 3
+max_level = 5
+weight = 35
+
+[sub_resource type="Resource" id="RareEntry"]
+script = ExtResource("2_entry")
+species_id = &"vela_rare"
+min_level = 4
+max_level = 5
+weight = 15
+
+[resource]
+script = ExtResource("1_table")
+entries = Array[ExtResource("2_entry")]([SubResource("NucikEntry"), SubResource("WahlikEntry"), SubResource("RareEntry")])
+minimum_steps = 4
+chance_per_step = 0.16

@@ -6,8 +6,13 @@ var running_requested: bool
 var ghost_movement_requested: bool
 
 func update() -> void:
+	if Observer.dialogue_open:
+		current_direction = Vector2.ZERO
+		running_requested = false
+		ghost_movement_requested = false
+		return
 	current_direction = _get_direction(Input.get_vector("move_left", "move_right", "move_up", "move_down"))
-	running_requested = _should_run();
+	running_requested = _should_run()
 	ghost_movement_requested = _should_walk_through_walls()
 
 func _should_run() -> bool:

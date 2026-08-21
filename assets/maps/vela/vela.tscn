@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/maps/test map.tscn" id="1_map"]
+[ext_resource type="PackedScene" path="res://assets/templates/npc.tscn" id="2_npc"]
+[ext_resource type="Script" path="res://src/world/encounter_zone.gd" id="3_encounter"]
+[ext_resource type="Resource" path="res://assets/data/encounters/vela_grass.tres" id="4_table"]
+
+[sub_resource type="RectangleShape2D" id="GrassEncounterShape"]
+size = Vector2(96, 48)
+
+[node name="Vela" type="Node2D"]
+y_sort_enabled = true
+
+[node name="TileWorld" parent="." instance=ExtResource("1_map")]
+
+[node name="Lira" parent="." instance=ExtResource("2_npc")]
+position = Vector2(128, 80)
+modulate = Color(0.68, 0.84, 1, 1)
+display_name = "Lira"
+dialogue_text = "Witaj w Veli. To pierwszy fragment nowego świata SOMADEX.|Miasto jest budowane z prawdziwych kafelków, a nie z prostokątów rysowanych kodem.|Na północy znajdziesz laboratorium. Na wschodzie zaczyna się pierwsza trasa."
+
+[node name="Badacz" parent="." instance=ExtResource("2_npc")]
+position = Vector2(176, 112)
+modulate = Color(0.78, 1, 0.74, 1)
+display_name = "Badacz"
+dialogue_text = "W wysokiej trawie żyją dzikie Somaskany.|Niedługo będziemy mogli badać ich ślady i rozpoczynać spotkania bez opuszczania tej architektury świata."
+
+[node name="Mieszkanka" parent="." instance=ExtResource("2_npc")]
+position = Vector2(96, 144)
+modulate = Color(1, 0.72, 0.78, 1)
+display_name = "Mieszkanka Veli"
+dialogue_text = "Dobrze, że tu jesteś. Vela wreszcie zaczyna wyglądać jak prawdziwe miejsce, a nie plansza testowa."
+
+[node name="GrassEncounterZone" type="Area2D" parent="."]
+position = Vector2(192, 64)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+script = ExtResource("3_encounter")
+encounter_table = ExtResource("4_table")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrassEncounterZone"]
+shape = SubResource("GrassEncounterShape")
