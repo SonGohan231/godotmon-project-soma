@@ -3,6 +3,8 @@ class_name SomadexBattleScreen
 
 var _closing_with_fade := false
 var enemy_status: String = ""
+var _enemy_pixel: Sprite2D
+var _player_pixel: Sprite2D
 
 func start_battle(species_id: StringName, level: int, world_position: Vector2 = Vector2.ZERO) -> void:
 	GameState.mark_seen(species_id)
@@ -16,6 +18,7 @@ func start_battle(species_id: StringName, level: int, world_position: Vector2 = 
 func _setup_hud() -> void:
 	super._setup_hud()
 	_refresh_status_hud()
+	_refresh_pixel_sprites()
 
 func _load_active_from_state() -> void:
 	super._load_active_from_state()
@@ -28,9 +31,52 @@ func _refresh_player_hud() -> void:
 	super._refresh_player_hud()
 	player_sprite.text = CreatureDex.back_glyph(player_species_id)
 	_refresh_status_hud()
+	_refresh_pixel_sprites()
 
 func _species_glyph(species_id: StringName) -> String:
 	return CreatureDex.front_glyph(species_id)
+
+func _refresh_pixel_sprites() -> void:
+	if !is_node_ready() || player_data.is_empty() || enemy_data.is_empty():
+		return
+	var arena := get_node_or_null("Arena")
+	if arena == null:
+		return
+	if !is_instance_valid(_enemy_pixel):
+		_enemy_pixel = Sprite2D.new()
+		_enemy_pixel.name = "EnemyPixelArt"
+		_enemy_pixel.position = Vector2(251, 47)
+		_enemy_pixel.scale = Vector2(1.55, 1.55)
+		_enemy_pixel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_enemy_pixel.z_index = 3
+		arena.add_child(_enemy_pixel)
+	if !is_instance_valid(_player_pixel):
+		_player_pixel = Sprite2D.new()
+		_player_pixel.name = "PlayerPixelArt"
+		_player_pixel.position = Vector2(82, 90)
+		_player_pixel.scale = Vector2(1.65, 1.65)
+		_player_pixel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_player_pixel.z_index = 3
+		arena.add_child(_player_pixel)
+	_enemy_pixel.texture = CreaturePixelArt.battle_texture(enemy_species_id, false)
+	_player_pixel.texture = CreaturePixelArt.battle_texture(player_species_id, true)
+	enemy_sprite.visible = false
+	player_sprite.visible = false
+
+func _animate_attack(sprite: Sprite2D, direction: Vector2) -> void:
+	if !is_instance_valid(sprite):
+		return
+	var origin := sprite.position
+	var tween := create_tween()
+	tween.tween_property(sprite, "position", origin + direction, 0.06)
+	tween.tween_property(sprite, "position", origin, 0.08)
+
+func _flash_hit(sprite: Sprite2D) -> void:
+	if !is_instance_valid(sprite):
+		return
+	var tween := create_tween()
+	tween.tween_property(sprite, "modulate:a", 0.30, 0.05)
+	tween.tween_property(sprite, "modulate:a", 1.0, 0.08)
 
 func _player_status() -> String:
 	if GameState.party.is_empty():
@@ -79,12 +125,14 @@ func _resolve_player_move(index: int) -> void:
 		_register_move_resonance(move, boost_used)
 		_show_message("%s używa %s. +%d HP%s" % [player_data.name, move.name, healed, "  REZ!" if boost_used else ""], _enemy_turn)
 		return
+	_animate_attack(_player_pixel, Vector2(10, -3))
 	var typed := SomadexBattleMath.damage(move, player_level_value, enemy_level_value, player_data, enemy_data, _rng.randf_range(0.92, 1.08))
 	var damage := _status_adjusted_damage(int(typed.damage), move, current_status, enemy_status)
 	if boost_used:
 		damage = mini(int(round(float(enemy_hp.max_value) * 0.55)), maxi(1, int(round(damage * 1.35))))
 	enemy_current_hp = maxi(0, enemy_current_hp - damage)
 	enemy_hp.value = enemy_current_hp
+	_flash_hit(_enemy_pixel)
 	_register_move_resonance(move, boost_used)
 	var suffix := SomadexTypeChart.feedback(float(typed.effectiveness)) + (" REZ!" if boost_used else "")
 	if enemy_current_hp > 0:
@@ -127,10 +175,12 @@ func _enemy_turn() -> void:
 		enemy_hp.value = enemy_current_hp
 		_show_message("%s odnawia %d HP." % [enemy_data.name, healed], func(): _set_mode(Mode.COMMAND))
 		return
+	_animate_attack(_enemy_pixel, Vector2(-10, 3))
 	var typed := SomadexBattleMath.damage(move, enemy_level_value, player_level_value, enemy_data, player_data, _rng.randf_range(0.92, 1.08))
 	var damage := _status_adjusted_damage(int(typed.damage), move, enemy_status, _player_status())
 	player_current_hp = maxi(0, player_current_hp - damage)
 	_sync_player_hp()
+	_flash_hit(_player_pixel)
 	_resonance.register_damage_taken(damage)
 	_refresh_resonance()
 	var suffix := SomadexTypeChart.feedback(float(typed.effectiveness))
@@ -217,6 +267,7 @@ func _win_battle() -> void:
 	# Reload evolved/leveled member so the base close sync cannot overwrite its new HP.
 	_load_active_from_state()
 	player_current_hp = int(GameState.party[0].get("current_hp", player_current_hp)) if !GameState.party.is_empty() else player_current_hp
+	_refresh_pixel_sprites()
 	_show_message(message, _close_battle)
 
 func _close_battle() -> void:
