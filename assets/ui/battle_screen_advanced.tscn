@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/ui/battle_screen.tscn" id="1_base"]
-[ext_resource type="Script" path="res://src/battle/battle_screen_advanced.gd" id="2_advanced"]
+[ext_resource type="Script" path="res://src/battle/battle_screen_visual.gd" id="2_visual"]
 
 [node name="BattleScreenAdvanced" instance=ExtResource("1_base")]
-script = ExtResource("2_advanced")
+script = ExtResource("2_visual")
