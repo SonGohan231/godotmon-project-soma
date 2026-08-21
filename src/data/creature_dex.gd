@@ -98,7 +98,6 @@ static func get_species(species_id: StringName) -> Dictionary:
 	for entry in all_entries():
 		if String(entry.species_id) == wanted:
 			return entry
-	# Old alpha builds used Wahlik/Nucik IDs directly; unknown saves degrade safely to #001.
 	return entry_by_index(1)
 
 static func dex_index_for_species(species_id: StringName) -> int:
@@ -117,23 +116,11 @@ static func _make_entry(family_id: int, stage: int) -> Dictionary:
 	var rarity := "common" if stage == 1 else ("uncommon" if stage == 2 else "rare")
 	var capture_rate := 0.58 if stage == 1 else (0.38 if stage == 2 else 0.22)
 	return {
-		"dex_index":dex_index,
-		"family_id":family_id,
-		"stage":stage,
-		"species_id":_slug(name),
-		"name":name.replace("_", " "),
-		"theme":String(family[3]),
-		"types":types,
-		"max_hp":base_hp,
-		"attack":attack,
-		"defense":defense,
-		"speed":speed,
-		"rarity":rarity,
-		"capture_rate":capture_rate,
-		"evolves_to":_slug(String(family[stage])) if stage < 3 else "",
+		"dex_index":dex_index,"family_id":family_id,"stage":stage,"species_id":_slug(name),"name":name.replace("_", " "),
+		"theme":String(family[3]),"types":types,"max_hp":base_hp,"attack":attack,"defense":defense,"speed":speed,
+		"rarity":rarity,"capture_rate":capture_rate,"evolves_to":_slug(String(family[stage])) if stage < 3 else "",
 		"evolution_level":14 + family_id % 4 if stage == 1 else (30 + family_id % 6 if stage == 2 else 0),
-		"description":_description(String(family[3]), stage),
-		"habitat":_habitat(types),
+		"description":_description(String(family[3]), stage),"habitat":_habitat(types),
 		"art":{"front_final":false,"back_final":false,"mini_final":false,"fallback_complete":true}
 	}
 
@@ -141,7 +128,8 @@ static func _slug(text: String) -> String:
 	return text.to_lower().replace("_", "-").replace(" ", "-")
 
 static func _description(theme: String, stage: int) -> String:
-	var phase := ["uczy się rozpoznawać", "potrafi świadomie kontrolować", "jest mistrzem"][stage - 1]
+	var phases: Array[String] = ["uczy się rozpoznawać", "potrafi świadomie kontrolować", "jest mistrzem"]
+	var phase: String = phases[stage - 1]
 	return "Somaskan związany z metodą „%s”. %s rytm, kierunek i odpowiedź otoczenia." % [theme, phase.capitalize()]
 
 static func _habitat(types: Array) -> String:
@@ -158,8 +146,9 @@ static func mini_frames(species_id: StringName) -> Array[String]:
 	var entry := get_species(species_id)
 	var types: Array = entry.get("types", ["KONTAKT"])
 	var glyph := String(TYPE_GLYPHS.get(String(types[0]), "◆"))
+	var dots: Array[String] = ["·","•","●"]
 	var stage := int(entry.get("stage", 1))
-	return ["%s%s" % [glyph, ["·","•","●"][stage - 1]], "%s%s" % [["·","•","●"][stage - 1], glyph]]
+	return ["%s%s" % [glyph, dots[stage - 1]], "%s%s" % [dots[stage - 1], glyph]]
 
 static func front_glyph(species_id: StringName) -> String:
 	var frames := mini_frames(species_id)
