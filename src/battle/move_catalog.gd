@@ -58,6 +58,7 @@ static func _natural_move(type_name: String, slot: int, stage: int = 1) -> Dicti
 	var names: Array = MOVE_NAMES[type_key]
 	var power_table := [7, 9, 11, -7]
 	var accuracy_table := [1.0, 0.92, 0.84, 1.0]
+	var status_table := [0.0, 0.18, 0.24, 0.0]
 	var stage_power := maxi(0, stage - 1)
 	var power := int(power_table[slot])
 	if power > 0:
@@ -71,5 +72,7 @@ static func _natural_move(type_name: String, slot: int, stage: int = 1) -> Dicti
 		"power":power,
 		"accuracy":float(accuracy_table[slot]),
 		"resonance_gain":[7,9,11,8][slot],
-		"priority":0
+		"priority":0,
+		"status":BattleStatus.status_for_type(type_key),
+		"status_chance":float(status_table[slot])
 	}
