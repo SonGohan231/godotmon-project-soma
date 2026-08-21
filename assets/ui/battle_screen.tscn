@@ -65,9 +65,9 @@ mouse_filter = 2
 
 [node name="PlayerShadow" type="ColorRect" parent="Arena"]
 offset_left = 32.0
-offset_top = 118.0
+offset_top = 106.0
 offset_right = 127.0
-offset_bottom = 128.0
+offset_bottom = 114.0
 color = Color(0.24, 0.36, 0.23, 0.35)
 mouse_filter = 2
 
@@ -84,9 +84,9 @@ vertical_alignment = 1
 
 [node name="PlayerSprite" type="Label" parent="Arena"]
 offset_left = 52.0
-offset_top = 87.0
+offset_top = 73.0
 offset_right = 112.0
-offset_bottom = 121.0
+offset_bottom = 107.0
 theme_override_colors/font_color = Color(0.1, 0.17, 0.14, 1)
 theme_override_font_sizes/font_size = 20
 text = "◢S◣"
@@ -201,230 +201,233 @@ show_percentage = false
 theme_override_styles/fill = SubResource("RezStyle")
 
 [node name="CommandBox" type="Panel" parent="."]
-offset_left = 117.0
+offset_left = 96.0
 offset_top = 133.0
-offset_right = 316.0
+offset_right = 226.0
 offset_bottom = 177.0
 theme_override_styles/panel = SubResource("PanelStyle")
 
 [node name="C0" type="Label" parent="CommandBox"]
-offset_left = 7.0
+offset_left = 5.0
 offset_top = 4.0
-offset_right = 99.0
-offset_bottom = 19.0
+offset_right = 62.0
+offset_bottom = 18.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 7
 text = "> WALKA"
 
 [node name="C1" type="Label" parent="CommandBox"]
-offset_left = 103.0
+offset_left = 64.0
 offset_top = 4.0
-offset_right = 194.0
-offset_bottom = 19.0
+offset_right = 124.0
+offset_bottom = 18.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 7
 text = "  SOMASKANY"
 
 [node name="C2" type="Label" parent="CommandBox"]
-offset_left = 7.0
+offset_left = 5.0
 offset_top = 23.0
-offset_right = 99.0
-offset_bottom = 38.0
+offset_right = 62.0
+offset_bottom = 37.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 7
 text = "  PLECAK"
 
 [node name="C3" type="Label" parent="CommandBox"]
-offset_left = 103.0
+offset_left = 64.0
 offset_top = 23.0
-offset_right = 194.0
-offset_bottom = 38.0
+offset_right = 124.0
+offset_bottom = 37.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 7
 text = "  UCIECZKA"
 
 [node name="MoveBox" type="Panel" parent="."]
-offset_left = 7.0
-offset_top = 126.0
-offset_right = 313.0
+offset_left = 96.0
+offset_top = 120.0
+offset_right = 226.0
 offset_bottom = 177.0
 theme_override_styles/panel = SubResource("PanelStyle")
 visible = false
 
 [node name="M0" type="Label" parent="MoveBox"]
-offset_left = 7.0
+offset_left = 5.0
 offset_top = 4.0
-offset_right = 151.0
+offset_right = 62.0
 offset_bottom = 17.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "> Puls"
 
 [node name="M1" type="Label" parent="MoveBox"]
-offset_left = 156.0
+offset_left = 64.0
 offset_top = 4.0
-offset_right = 298.0
+offset_right = 124.0
 offset_bottom = 17.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "  Ślizg"
 
 [node name="M2" type="Label" parent="MoveBox"]
-offset_left = 7.0
-offset_top = 19.0
-offset_right = 151.0
-offset_bottom = 32.0
+offset_left = 5.0
+offset_top = 20.0
+offset_right = 62.0
+offset_bottom = 33.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "  Rezonans"
 
 [node name="M3" type="Label" parent="MoveBox"]
-offset_left = 156.0
-offset_top = 19.0
-offset_right = 298.0
-offset_bottom = 32.0
+offset_left = 64.0
+offset_top = 20.0
+offset_right = 124.0
+offset_bottom = 33.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "  Reset"
 
 [node name="Info" type="Label" parent="MoveBox"]
-offset_left = 7.0
-offset_top = 34.0
-offset_right = 298.0
-offset_bottom = 48.0
+offset_left = 5.0
+offset_top = 37.0
+offset_right = 124.0
+offset_bottom = 53.0
 theme_override_colors/font_color = Color(0.25, 0.31, 0.29, 1)
-theme_override_font_sizes/font_size = 7
-text = "NERW MOC 8 CEL 95%  R 0%"
+theme_override_font_sizes/font_size = 6
+text = "NERW MOC 8 CEL 95% R 0%"
+autowrap_mode = 2
 
 [node name="PartyBox" type="Panel" parent="."]
-offset_left = 7.0
-offset_top = 116.0
-offset_right = 313.0
+offset_left = 96.0
+offset_top = 110.0
+offset_right = 226.0
 offset_bottom = 177.0
 theme_override_styles/panel = SubResource("PanelStyle")
 visible = false
 
 [node name="P0" type="Label" parent="PartyBox"]
-offset_left = 7.0
+offset_left = 5.0
 offset_top = 4.0
-offset_right = 151.0
+offset_right = 62.0
 offset_bottom = 16.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 6
 text = ">1 SOMARI L5"
 
 [node name="P1" type="Label" parent="PartyBox"]
-offset_left = 156.0
+offset_left = 64.0
 offset_top = 4.0
-offset_right = 298.0
+offset_right = 124.0
 offset_bottom = 16.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 6
 text = "--"
 
 [node name="P2" type="Label" parent="PartyBox"]
-offset_left = 7.0
-offset_top = 17.0
-offset_right = 151.0
-offset_bottom = 29.0
+offset_left = 5.0
+offset_top = 18.0
+offset_right = 62.0
+offset_bottom = 30.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 6
 text = "--"
 
 [node name="P3" type="Label" parent="PartyBox"]
-offset_left = 156.0
-offset_top = 17.0
-offset_right = 298.0
-offset_bottom = 29.0
+offset_left = 64.0
+offset_top = 18.0
+offset_right = 124.0
+offset_bottom = 30.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 6
 text = "--"
 
 [node name="P4" type="Label" parent="PartyBox"]
-offset_left = 7.0
-offset_top = 30.0
-offset_right = 151.0
-offset_bottom = 42.0
+offset_left = 5.0
+offset_top = 32.0
+offset_right = 62.0
+offset_bottom = 44.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 6
 text = "--"
 
 [node name="P5" type="Label" parent="PartyBox"]
-offset_left = 156.0
-offset_top = 30.0
-offset_right = 298.0
-offset_bottom = 42.0
+offset_left = 64.0
+offset_top = 32.0
+offset_right = 124.0
+offset_bottom = 44.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 6
 text = "--"
 
 [node name="Info" type="Label" parent="PartyBox"]
-offset_left = 7.0
-offset_top = 44.0
-offset_right = 298.0
-offset_bottom = 57.0
+offset_left = 5.0
+offset_top = 47.0
+offset_right = 124.0
+offset_bottom = 63.0
 theme_override_colors/font_color = Color(0.25, 0.31, 0.29, 1)
-theme_override_font_sizes/font_size = 7
-text = "HP 48/48  A:ZMIANA  Z:WRÓĆ"
+theme_override_font_sizes/font_size = 6
+text = "HP 48/48 A:ZMIANA Z:WRÓĆ"
+autowrap_mode = 2
 
 [node name="BagBox" type="Panel" parent="."]
-offset_left = 79.0
-offset_top = 124.0
-offset_right = 313.0
+offset_left = 96.0
+offset_top = 119.0
+offset_right = 226.0
 offset_bottom = 177.0
 theme_override_styles/panel = SubResource("PanelStyle")
 visible = false
 
 [node name="B0" type="Label" parent="BagBox"]
-offset_left = 7.0
+offset_left = 5.0
 offset_top = 4.0
-offset_right = 110.0
-offset_bottom = 17.0
+offset_right = 124.0
+offset_bottom = 16.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "> KAPSUŁA x3"
 
 [node name="B1" type="Label" parent="BagBox"]
-offset_left = 116.0
-offset_top = 4.0
-offset_right = 225.0
-offset_bottom = 17.0
+offset_left = 5.0
+offset_top = 17.0
+offset_right = 124.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "  OPATRUNEK x2"
 
 [node name="B2" type="Label" parent="BagBox"]
-offset_left = 7.0
-offset_top = 20.0
-offset_right = 110.0
-offset_bottom = 33.0
+offset_left = 5.0
+offset_top = 30.0
+offset_right = 124.0
+offset_bottom = 42.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "  WRÓĆ"
 
 [node name="Info" type="Label" parent="BagBox"]
-offset_left = 7.0
-offset_top = 35.0
-offset_right = 225.0
-offset_bottom = 49.0
+offset_left = 5.0
+offset_top = 43.0
+offset_right = 124.0
+offset_bottom = 55.0
 theme_override_colors/font_color = Color(0.25, 0.31, 0.29, 1)
-theme_override_font_sizes/font_size = 7
-text = "ŁAPANIE — skuteczniejsze przy niskim HP"
+theme_override_font_sizes/font_size = 6
+text = "ŁAPANIE — NISKIE HP POMAGA"
+autowrap_mode = 2
 
 [node name="MessageBox" type="Panel" parent="."]
-offset_left = 7.0
-offset_top = 127.0
-offset_right = 313.0
+offset_left = 96.0
+offset_top = 111.0
+offset_right = 226.0
 offset_bottom = 177.0
 theme_override_styles/panel = SubResource("PanelStyle")
 visible = false
 
 [node name="Text" type="Label" parent="MessageBox"]
-offset_left = 8.0
+offset_left = 6.0
 offset_top = 5.0
-offset_right = 298.0
-offset_bottom = 45.0
+offset_right = 124.0
+offset_bottom = 62.0
 theme_override_colors/font_color = Color(0.07, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "Dziki Nucik pojawia się!\nA/Z — dalej"
 autowrap_mode = 2
