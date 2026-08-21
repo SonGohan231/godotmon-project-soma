@@ -1,0 +1,37 @@
+name: SOMADEX V2 Visual QA
+
+on:
+  push:
+    branches:
+      - somadex-v2-vertical-slice
+  workflow_dispatch:
+
+jobs:
+  capture-overworld:
+    runs-on: ubuntu-latest
+    container: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install virtual display
+        run: |
+          apt-get update
+          apt-get install -y xvfb
+
+      - name: Import and parse project
+        run: godot --headless --path . --editor --quit-after 5
+
+      - name: Capture actual overworld runtime
+        run: |
+          mkdir -p qa
+          export SOMADEX_CAPTURE_PATH="$GITHUB_WORKSPACE/qa/vela_overworld.png"
+          timeout 30s xvfb-run -a godot --path . --display-driver x11
+          test -s qa/vela_overworld.png
+
+      - name: Upload runtime screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: somadex-v2-overworld-visual-qa
+          path: qa/vela_overworld.png
+          if-no-files-found: error
