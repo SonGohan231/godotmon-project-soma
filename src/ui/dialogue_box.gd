@@ -27,6 +27,7 @@ func show_dialogue(speaker: String, lines: Array[String]) -> void:
 	_index = 0
 	_open = true
 	visible = true
+	Observer.set_dialogue_open(true)
 	_render_line()
 
 func advance() -> void:
@@ -41,6 +42,7 @@ func advance() -> void:
 func close() -> void:
 	_open = false
 	visible = false
+	Observer.set_dialogue_open(false)
 
 func is_open() -> bool:
 	return _open
