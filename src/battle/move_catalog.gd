@@ -17,8 +17,16 @@ const MOVE_NAMES := {
 	"MISTYCZNE":["Skupienie Qi","Krąg Uwagowy","Mantra Rezonansu","Medytacja"]
 }
 
+const LEGACY_ALIAS := {
+	"puls":"nerw_1","slizg":"kontakt_2","rezonans":"rezonans_3","reset":"kontakt_4",
+	"impuls":"nerw_1","mikrodrganie":"rezonans_1","ucisk":"kontakt_3","regulacja":"rezonans_4",
+	"fala":"rezonans_1","napiecie":"kontakt_2","oscylacja":"rezonans_3","uziemienie":"ziemia_4",
+	"blysk_veli":"piezo_1","echo":"rezonans_2","przebicie":"piezo_3","oddech":"oddech_4"
+}
+
 static func get_move(move_id: StringName) -> Dictionary:
 	var id := String(move_id)
+	id = String(LEGACY_ALIAS.get(id, id))
 	for type_name in SomadexTypeChart.TYPES:
 		for index in 4:
 			var candidate := _natural_move(type_name, index)
@@ -30,13 +38,12 @@ static func get_move(move_id: StringName) -> Dictionary:
 static func natural_moves(types: Array, stage: int = 1) -> Array:
 	var primary := String(types[0]) if !types.is_empty() else "KONTAKT"
 	var secondary := String(types[1]) if types.size() > 1 else primary
-	var result: Array = [
+	return [
 		_natural_move(primary, 0, stage),
 		_natural_move(secondary, 1, stage),
 		_natural_move(primary, 2, stage),
 		_natural_move(secondary, 3, stage)
 	]
-	return result
 
 static func natural_move_ids(types: Array, stage: int = 1) -> Array[StringName]:
 	var out: Array[StringName] = []
