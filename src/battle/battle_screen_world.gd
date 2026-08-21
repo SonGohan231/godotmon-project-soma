@@ -1,4 +1,4 @@
-extends SomadexBattleScreen
+extends SomadexBattleScreenVisual
 class_name SomadexWorldBattleScreen
 
 var trainer_mode: bool = false
