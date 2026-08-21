@@ -1,0 +1,20 @@
+name: SOMADEX Dex Types TM Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  dex-types-tm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    container: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Import and compile project
+        run: godot --headless --path . --editor --quit-after 8
+      - name: Verify 150 forms type chart TM teaching migration and battle pace
+        run: timeout 45s godot --headless --path . --script res://tests/dex_types_tm_smoke.gd
