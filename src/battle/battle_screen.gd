@@ -24,7 +24,9 @@ var player_data: Dictionary = {}
 var enemy_current_hp: int = 1
 var player_current_hp: int = 1
 var enemy_species_id: StringName
+var player_species_id: StringName = &"starter"
 var enemy_level_value: int = 1
+var player_level_value: int = 1
 var _rng := RandomNumberGenerator.new()
 var _message_callback: Callable
 
@@ -40,14 +42,19 @@ func _on_encounter_requested(species_id: StringName, level: int, world_position:
 	start_battle(species_id, level, world_position)
 
 func start_battle(species_id: StringName, level: int, _world_position: Vector2 = Vector2.ZERO) -> void:
-	if mode != Mode.CLOSED:
+	if mode != Mode.CLOSED || GameState.party.is_empty():
 		return
 	enemy_species_id = species_id
-	enemy_level_value = level
+	enemy_level_value = maxi(1, level)
 	enemy_data = SomaskanCatalog.get_species(species_id)
-	player_data = SomaskanCatalog.get_species(&"starter")
-	enemy_current_hp = int(enemy_data.max_hp) + level * 2
-	player_current_hp = int(player_data.max_hp) + 8
+	var active: Dictionary = GameState.party[0]
+	player_species_id = StringName(active.get("species_id", "starter"))
+	player_level_value = maxi(1, int(active.get("level", 1)))
+	player_data = SomaskanCatalog.get_species(player_species_id)
+	enemy_current_hp = _max_hp(enemy_data, enemy_level_value)
+	var active_max_hp: int = _max_hp(player_data, player_level_value)
+	player_current_hp = clampi(int(active.get("current_hp", active_max_hp)), 1, active_max_hp)
+	GameState.party[0]["current_hp"] = player_current_hp
 	command_index = 0
 	move_index = 0
 	visible = true
@@ -78,8 +85,8 @@ func _process_command_input() -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		match command_index:
 			0: _set_mode(Mode.MOVES)
-			1: _show_message("Wybór drużyny zostanie podpięty do trwałego GameState.", func(): _set_mode(Mode.COMMAND))
-			2: _show_message("Plecak zostanie podpięty do wspólnego ekwipunku.", func(): _set_mode(Mode.COMMAND))
+			1: _show_party_summary()
+			2: _attempt_capture()
 			3: _attempt_escape()
 
 func _process_move_input() -> void:
@@ -94,13 +101,13 @@ func _process_move_input() -> void:
 		move_index = mini(3, move_index + 2)
 	if previous != move_index:
 		_refresh_moves()
-	if Input.is_action_just_pressed("ui_cancel") || Input.is_action_just_pressed("action_z"):
+	if Input.is_action_just_pressed("ui_cancel"):
 		_set_mode(Mode.COMMAND)
 	elif Input.is_action_just_pressed("ui_accept"):
 		_resolve_player_move(move_index)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if mode == Mode.MESSAGE && (event.is_action_pressed("ui_accept") || event.is_action_pressed("ui_cancel") || event.is_action_pressed("action_z")):
+	if mode == Mode.MESSAGE && (event.is_action_pressed("ui_accept") || event.is_action_pressed("ui_cancel")):
 		get_viewport().set_input_as_handled()
 		_finish_message()
 
@@ -111,17 +118,21 @@ func _setup_hud() -> void:
 	enemy_hp.value = enemy_current_hp
 	enemy_sprite.text = _species_glyph(enemy_species_id)
 	player_name.text = String(player_data.name).to_upper()
-	player_level.text = "LV 5"
-	player_hp.max_value = player_current_hp
+	player_level.text = "LV %d" % player_level_value
+	player_hp.max_value = _max_hp(player_data, player_level_value)
 	player_hp.value = player_current_hp
-	player_sprite.text = "◢S◣"
+	player_sprite.text = _species_glyph(player_species_id)
 	_refresh_commands()
 	_refresh_moves()
+
+func _max_hp(species_data: Dictionary, level: int) -> int:
+	return maxi(1, int(species_data.get("max_hp", 20)) + maxi(0, level - 1) * 2)
 
 func _species_glyph(species_id: StringName) -> String:
 	match String(species_id):
 		"wahlik": return "◈W◈"
 		"vela_rare": return "✦V✦"
+		"starter": return "◢S◣"
 		_: return "◇N◇"
 
 func _set_mode(next_mode: Mode) -> void:
@@ -167,10 +178,10 @@ func _resolve_player_move(index: int) -> void:
 	if int(move.power) < 0:
 		var healed: int = mini(abs(int(move.power)), int(player_hp.max_value) - player_current_hp)
 		player_current_hp += healed
-		player_hp.value = player_current_hp
+		_sync_player_hp()
 		_show_message("%s używa %s. +%d HP" % [player_data.name, move.name, healed], _enemy_turn)
 		return
-	var damage: int = _damage_for(move, 5)
+	var damage: int = _damage_for(move, player_level_value)
 	enemy_current_hp = maxi(0, enemy_current_hp - damage)
 	enemy_hp.value = enemy_current_hp
 	if enemy_current_hp <= 0:
@@ -195,11 +206,37 @@ func _enemy_turn() -> void:
 		return
 	var damage: int = _damage_for(move, enemy_level_value)
 	player_current_hp = maxi(0, player_current_hp - damage)
-	player_hp.value = player_current_hp
+	_sync_player_hp()
 	if player_current_hp <= 0:
-		_show_message("%s używa %s. Somari nie może walczyć." % [enemy_data.name, move.name], _lose_battle)
+		_show_message("%s używa %s. %s nie może walczyć." % [enemy_data.name, move.name, player_data.name], _lose_battle)
 	else:
 		_show_message("%s używa %s. -%d HP" % [enemy_data.name, move.name, damage], func(): _set_mode(Mode.COMMAND))
+
+func _sync_player_hp() -> void:
+	player_hp.value = player_current_hp
+	if !GameState.party.is_empty():
+		GameState.party[0]["current_hp"] = player_current_hp
+
+func _show_party_summary() -> void:
+	var active: Dictionary = GameState.party[0]
+	_show_message("DRUŻYNA %d/6\n%s  LV %d  HP %d/%d" % [GameState.party.size(), String(player_data.name).to_upper(), int(active.get("level", 1)), player_current_hp, int(player_hp.max_value)], func(): _set_mode(Mode.COMMAND))
+
+func _attempt_capture() -> void:
+	var capsules: int = int(GameState.bag.get("capsule", 0))
+	if capsules <= 0:
+		_show_message("Brak Kapsuł w plecaku.", func(): _set_mode(Mode.COMMAND))
+		return
+	GameState.consume_item(&"capsule", 1)
+	var hp_ratio: float = float(enemy_current_hp) / maxf(1.0, float(enemy_hp.max_value))
+	var base_rate: float = float(enemy_data.get("capture_rate", 0.35))
+	var chance: float = clampf(base_rate + (1.0 - hp_ratio) * 0.42, 0.05, 0.92)
+	if _rng.randf() <= chance:
+		var learned: Array[StringName] = SomaskanCatalog.move_ids(enemy_species_id)
+		GameState.add_captured_somaskan(enemy_species_id, enemy_level_value, enemy_current_hp, learned)
+		GameState.mark_flag(&"first_wild_capture")
+		_show_message("Udało się! %s dołącza do kolekcji." % enemy_data.name, _close_battle)
+	else:
+		_show_message("%s wyskakuje z Kapsuły!" % enemy_data.name, _enemy_turn)
 
 func _damage_for(move: Dictionary, level: int) -> int:
 	return maxi(1, int(round(float(move.power) * (0.72 + level * 0.045) * _rng.randf_range(0.9, 1.1))))
@@ -212,10 +249,15 @@ func _attempt_escape() -> void:
 		_show_message("Nie udało się uciec!", _enemy_turn)
 
 func _win_battle() -> void:
-	_show_message("Wygrana. Zdobywasz doświadczenie trenera i Somaskana.", _close_battle)
+	var xp_gain: int = 10 + enemy_level_value * 4
+	GameState.add_trainer_xp(xp_gain)
+	GameState.mark_flag(&"first_wild_battle")
+	_show_message("Wygrana! Trener zdobywa %d XP." % xp_gain, _close_battle)
 
 func _lose_battle() -> void:
-	_show_message("Porażka. Powrót do punktu leczenia będzie obsługiwany przez GameState.", _close_battle)
+	player_current_hp = 1
+	_sync_player_hp()
+	_show_message("Porażka. Drużyna potrzebuje odpoczynku.", _close_battle)
 
 func _show_message(text: String, callback: Callable = Callable()) -> void:
 	mode = Mode.MESSAGE
@@ -232,6 +274,7 @@ func _finish_message() -> void:
 		_set_mode(Mode.COMMAND)
 
 func _close_battle() -> void:
+	_sync_player_hp()
 	mode = Mode.CLOSED
 	visible = false
 	Observer.set_battle_open(false)
